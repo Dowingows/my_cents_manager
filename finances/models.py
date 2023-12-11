@@ -8,8 +8,8 @@ class Expense(models.Model):
     due_date = models.DateField()
 
     def __str__(self):
-        return self.name + " (R$ {})".format(self.amount)
+        return self.name + ' (R$ {})'.format(self.amount)
 
     class Meta:
-        verbose_name = "Expense"
-        verbose_name_plural = "Expenses"
+        verbose_name = 'Expense'
+        verbose_name_plural = 'Expenses'

@@ -11,6 +11,35 @@ python = "^3.12"
 django = "^5.0"
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+blue = "^0.9.1"
+taskipy = "^1.12.2"
+isort = "^5.13.0"
+
+
+[tool.poetry.group.doc.dependencies]
+mkdocs = "^1.5.3"
+mkdocstrings = "^0.24.0"
+mkdocstrings-python = "^1.7.5"
+mkdocs-macros-plugin = "^1.0.5"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = "--doctest-modules"
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.taskipy.tasks]
+lint = "blue --check  --diff . && isort --check --diff ."
+docs = "mkdocs serve"
+pre_test = "task lint" 
+test = "pytest -s -x --cov=phylogenetic_indices -vv" 
+post_test = "coverage html"
