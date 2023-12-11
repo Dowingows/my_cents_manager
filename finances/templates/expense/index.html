@@ -1,5 +1,5 @@
 <ul>
     {% for expense in expenses %}
-        <li><a href="{% url 'finances:detail' expense.id %}">{{ expense }}</a></li>
+        <li><a href="{% url 'finances:edit' expense.id %}">{{ expense }}</a></li>
     {% endfor %}
 </ul>

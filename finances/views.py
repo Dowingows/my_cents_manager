@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import generic
 
@@ -30,3 +30,21 @@ def expense_create(request):
         form = ExpenseForm()
 
     return render(request, 'expense/form.html', {'form': form})
+
+
+def edit(request, pk):
+    expense = get_object_or_404(Expense, pk=pk)
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST, instance=expense)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('finances:index'))
+    else:
+        form = ExpenseForm(instance=expense)
+    return render(request, 'expense/form.html', {'form': form})
+
+
+def delete(request, pk):
+    expense = get_object_or_404(Expense, pk=pk)
+    expense.delete()
+    return redirect(reverse('finances:index'))
