@@ -5,8 +5,18 @@ from django.utils import timezone
 from finances.models import Expense
 
 
+class ExpenseIndexViewTest(TestCase):
+    fixtures = ['expenses.json']
+
+    def test_expense_index_view(self):
+
+        url = reverse('finances:index')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
 class ExpenseDetailViewTest(TestCase):
-    fixtures = ['expense.json']
+    fixtures = ['expenses.json']
 
     def test_expense_detail_view(self):
 

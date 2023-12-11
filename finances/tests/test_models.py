@@ -29,3 +29,16 @@ class ExpenseModelTest(TestCase):
         )
 
         self.assertTrue(expense_past.is_delayed(), 'Despesa está atrasada')
+
+    def test_str_representation(self):
+        # Create an Expense instance
+        expense = Expense(
+            name='Test Expense',
+            amount=100.50,
+            payment_date=None,
+            due_date=timezone.now().date(),
+        )
+
+        # Check if the __str__ method returns the expected string
+        expected_str = 'Test Expense (R$ 100.5)'
+        self.assertEqual(str(expense), expected_str)

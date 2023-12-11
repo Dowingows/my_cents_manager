@@ -15,6 +15,7 @@ django = "^5.0"
 blue = "^0.9.1"
 taskipy = "^1.12.2"
 isort = "^5.13.0"
+coverage = "^7.3.2"
 
 
 [tool.poetry.group.doc.dependencies]
@@ -39,5 +40,15 @@ extend_skip = ['migrations']
 lint = "blue --check  --diff . && isort --check --diff ."
 docs = "mkdocs serve"
 pre_test = "task lint" 
-test = "poetry run python manage.py test finances" 
-#post_test = "coverage html"
+test = "poetry run coverage run --source='.' manage.py test finances" 
+post_test = "poetry run coverage html"
+
+[tool.coverage.run]
+omit = [
+    # omit anything in a .local directory anywhere
+    "manage.py",
+    "core/*",
+    "finances/__init__.py",
+    "finances/migrations/*",
+    "finances/tests/*",
+]
