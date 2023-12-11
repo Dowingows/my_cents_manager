@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "finance-app"
+version = "0.1.0"
+description = "a simple app to manage personal finance"
+authors = ["Domingos Dias"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
