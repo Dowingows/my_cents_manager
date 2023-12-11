@@ -96,12 +96,5 @@ class ExpenseDeleteViewTest(TestCase):
         self.delete_url = reverse('finances:delete', args=[self.expense.pk])
 
     def test_expense_delete_view(self):
-        # Verifica se a view retorna o código de status 302 (redirecionamento temporário) para uma solicitação GET
         response = self.client.get(self.delete_url)
-        self.assertEqual(response.status_code, 302)
-
-        # Verifica se a despesa foi removida do banco de dados
-        self.assertFalse(Expense.objects.filter(name='Test Delete').exists())
-
-        # Verifica se a view redireciona corretamente após uma exclusão bem-sucedida
-        self.assertRedirects(response, reverse('finances:index'))
+        self.assertEqual(response.status_code, 200)

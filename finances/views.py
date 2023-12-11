@@ -31,7 +31,7 @@ class ExpenseUpdateView(generic.UpdateView):
     success_url = reverse_lazy('finances:index')
 
 
-def delete(request, pk):
-    expense = get_object_or_404(Expense, pk=pk)
-    expense.delete()
-    return redirect(reverse('finances:index'))
+class ExpenseDeleteView(generic.DeleteView):
+    model = Expense
+    template_name = 'expense/confirm_delete.html'
+    success_url = reverse_lazy('finances:index')

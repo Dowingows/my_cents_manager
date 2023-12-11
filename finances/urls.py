@@ -13,5 +13,9 @@ urlpatterns = [
         views.ExpenseUpdateView.as_view(),
         name='edit',
     ),
-    path('expenses/<int:pk>/delete/', views.delete, name='delete'),
+    path(
+        'expenses/<int:pk>/delete/',
+        views.ExpenseDeleteView.as_view(),
+        name='delete',
+    ),
 ]
