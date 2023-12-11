@@ -27,9 +27,13 @@ mkdocs-macros-plugin = "^1.0.5"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.blue]
+extend-exclude = '(migrations/)'
+
 [tool.isort]
 profile = "black"
 line_length = 79
+extend_skip = ['migrations']
 
 [tool.taskipy.tasks]
 lint = "blue --check  --diff . && isort --check --diff ."

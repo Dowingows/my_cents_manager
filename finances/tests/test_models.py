@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Expense
+from finances.models import Expense
 
 
 class ExpenseModelTest(TestCase):
