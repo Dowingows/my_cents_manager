@@ -55,10 +55,10 @@ class ExpenseCreateViewTest(TestCase):
         self.assertEqual(str(expense.due_date), '2023-12-20')
 
 
-class ExpenseEditViewTest(TestCase):
+class ExpenseUpdateViewTest(TestCase):
     fixtures = ['expenses.json']
 
-    def test_expense_edit_view(self):
+    def test_expense_update_view(self):
 
         # Verifica se a view retorna o código de status 200 (OK) para uma solicitação GET
         url = reverse('finances:edit', args=(1,))
