@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 django = "^5.0"
+ruff = "^0.1.8"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -28,6 +29,10 @@ mkdocs-macros-plugin = "^1.0.5"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.ruff]
+line-length = 79
+exclude = ['.venv', 'migrations']
+
 [tool.blue]
 extend-exclude = '(migrations/)'
 
@@ -37,7 +42,8 @@ line_length = 79
 extend_skip = ['migrations']
 
 [tool.taskipy.tasks]
-lint = "blue --check  --diff . && isort --check --diff ."
+lint = 'ruff . && blue --check . --diff'
+format = 'blue .  && isort .'
 docs = "mkdocs serve"
 pre_test = "task lint" 
 test = "poetry run coverage run --source='.' manage.py test finances" 

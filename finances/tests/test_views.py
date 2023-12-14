@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
 from finances.models import Expense
 
