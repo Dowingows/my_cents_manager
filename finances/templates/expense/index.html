@@ -1,5 +1,15 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+    <a href="{% url 'finances:create' %}">Novo</a>
+{% endblock %}
+
+{% block content %}
+<h1>Despesas</h1>
 <ul>
     {% for expense in expenses %}
         <li><a href="{% url 'finances:edit' expense.id %}">{{ expense }}</a></li>
     {% endfor %}
 </ul>
+
+{% endblock %}

@@ -48,6 +48,7 @@ docs = "mkdocs serve"
 pre_test = "task lint" 
 test = "poetry run coverage run --source='.' manage.py test finances" 
 post_test = "poetry run coverage html"
+run = "python manage.py runserver"
 
 [tool.coverage.run]
 omit = [
