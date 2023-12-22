@@ -14,4 +14,4 @@ class ExpenseForm(forms.ModelForm):
 
     class Meta:
         model = Expense
-        fields = ['name', 'amount', 'payment_date', 'due_date']
+        fields = ['name', 'amount', 'due_date', 'payment_date']
