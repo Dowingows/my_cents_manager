@@ -24,13 +24,13 @@ class IndexView(generic.ListView):
     context_object_name = 'expenses'
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class DetailView(generic.DetailView):
     model = Expense
     template_name = 'expense/detail.html'
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class ExpenseCreateView(generic.CreateView):
     model = Expense
     form_class = ExpenseForm
@@ -38,7 +38,7 @@ class ExpenseCreateView(generic.CreateView):
     success_url = reverse_lazy('finances:expense_index')
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class ExpenseUpdateView(generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
@@ -46,7 +46,7 @@ class ExpenseUpdateView(generic.UpdateView):
     success_url = reverse_lazy('finances:expense_index')
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class ExpenseDeleteView(generic.DeleteView):
     model = Expense
     template_name = 'expense/confirm_delete.html'
