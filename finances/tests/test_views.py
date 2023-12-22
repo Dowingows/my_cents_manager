@@ -91,3 +91,43 @@ class ExpenseUpdateViewTest(AuthenticationMixin, TestCase):
         url = reverse('finances:expense_edit', args=(1,))
 
         self.assertRequiresAuthentication(url)
+
+    def test_expense_update_view_authenticated(self):
+
+        expense = Expense.objects.create(
+            user=self.test_user,
+            name='Test Expense',
+            amount=50.00,
+            due_date='2023-12-31',
+            payment_date='2023-12-30',
+        )
+
+        self.authenticate_user()
+
+        url = reverse('finances:expense_edit', args=(expense.pk,))
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        updated_data = {
+            'name': 'Updated Expense',
+            'amount': 75.00,
+            'due_date': '2023-02-01',
+            'payment_date': '2024-01-01',
+        }
+
+        response = self.client.post(url, data=updated_data)
+
+        self.assertRedirects(response, reverse('finances:expense_index'))
+
+        updated_expense = Expense.objects.get(pk=expense.pk)
+
+        self.assertEqual(updated_expense.name, updated_data['name'])
+        self.assertEqual(updated_expense.amount, updated_data['amount'])
+        self.assertEqual(
+            str(updated_expense.due_date), updated_data['due_date']
+        )
+        self.assertEqual(
+            str(updated_expense.payment_date), updated_data['payment_date']
+        )
