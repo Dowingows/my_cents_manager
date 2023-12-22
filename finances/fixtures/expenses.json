@@ -6,7 +6,8 @@
       "name": "Test 1",
       "amount": 20.00,
       "due_date": "2023-11-12",
-      "payment_date": "2023-11-12"
+      "payment_date": "2023-11-12",
+      "user_id": 1
     }
   },
   {
@@ -16,7 +17,8 @@
       "name": "Test 2",
       "amount": 75.00,
       "due_date": "2023-11-12",
-      "payment_date": "2023-11-12"
+      "payment_date": "2023-11-12",
+      "user_id": 1
     }
   },
   {
@@ -26,7 +28,8 @@
       "name": "Test 3",
       "amount": 90.00,
       "due_date": "2023-11-20",
-      "payment_date": "2023-11-19"
+      "payment_date": "2023-11-19",
+      "user_id": 1
     }
   }
 ]

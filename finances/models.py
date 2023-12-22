@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -7,6 +8,8 @@ class Expense(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField(null=True, blank=True)
     due_date = models.DateField()
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def is_delayed(self):
         return (
