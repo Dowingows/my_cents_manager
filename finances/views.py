@@ -43,7 +43,7 @@ class ExpenseCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-# @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class ExpenseUpdateView(generic.UpdateView):
     model = Expense
     form_class = ExpenseForm

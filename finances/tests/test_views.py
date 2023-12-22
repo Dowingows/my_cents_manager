@@ -83,3 +83,11 @@ class ExpenseCreateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(expense.amount, 100.00)
         self.assertEqual(str(expense.payment_date), '2023-12-15')
         self.assertEqual(str(expense.due_date), '2023-12-20')
+
+
+class ExpenseUpdateViewTest(AuthenticationMixin, TestCase):
+    def test_expense_update_view_not_authenticated(self):
+
+        url = reverse('finances:expense_edit', args=(1,))
+
+        self.assertRequiresAuthentication(url)
