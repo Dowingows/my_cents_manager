@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block sidebar %}
+    <a href="{% url 'authentication:signin' %}">Sair</a>
+{% endblock %}
+
 
 {% block content %}
 <h1> Seja bem-vindo, {{ user.username }} </h1>
