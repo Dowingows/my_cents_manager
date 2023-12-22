@@ -5,17 +5,22 @@ from . import views
 app_name = 'finances'
 
 urlpatterns = [
-    path('expense', views.IndexView.as_view(), name='index'),
-    path('expense/new', views.ExpenseCreateView.as_view(), name='create'),
-    path('expense/<int:pk>/', views.DetailView.as_view(), name='detail'),
+    path('', views.home, name='home'),
+    path('expense', views.IndexView.as_view(), name='expense_index'),
+    path(
+        'expense/new', views.ExpenseCreateView.as_view(), name='expense_create'
+    ),
+    path(
+        'expense/<int:pk>/', views.DetailView.as_view(), name='expense_detail'
+    ),
     path(
         'expenses/<int:pk>/edit/',
         views.ExpenseUpdateView.as_view(),
-        name='edit',
+        name='expense_edit',
     ),
     path(
         'expenses/<int:pk>/delete/',
         views.ExpenseDeleteView.as_view(),
-        name='delete',
+        name='expense_delete',
     ),
 ]

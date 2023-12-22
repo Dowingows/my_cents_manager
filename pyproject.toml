@@ -46,7 +46,7 @@ lint = 'ruff . && blue --check . --diff'
 format = 'blue .  && isort .'
 docs = "mkdocs serve"
 pre_test = "task lint" 
-test = "poetry run coverage run --source='.' manage.py test finances" 
+test = "poetry run coverage run --source='.' manage.py test finances authentication" 
 post_test = "poetry run coverage html"
 run = "python manage.py runserver"
 
