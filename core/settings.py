@@ -130,4 +130,5 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-LOGIN_URL = '/signin'
+LOGIN_URL = '/auth/signin'
+LOGOUT_REDIRECT_URL = '/'

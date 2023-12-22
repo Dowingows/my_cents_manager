@@ -1,10 +1,20 @@
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .forms import ExpenseForm
 from .models import Expense
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+@login_required
+def home(request):
+    return render(request, 'home.html')
 
 
 @method_decorator(login_required, name='dispatch')

@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from finances.views import index
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('finances/', include('finances.urls')),
-    path('', include('authentication.urls')),
+    path('auth/', include('authentication.urls')),
+    path('', index),
 ]
