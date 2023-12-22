@@ -131,3 +131,35 @@ class ExpenseUpdateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(
             str(updated_expense.payment_date), updated_data['payment_date']
         )
+
+
+class ExpenseDeleteViewTest(AuthenticationMixin, TestCase):
+    def setUp(self):
+
+        super().setUp()
+
+        self.expense = Expense.objects.create(
+            name='Test Delete',
+            amount=50.00,
+            due_date='2023-12-31',
+            payment_date='2023-12-31',
+            user=self.test_user,
+        )
+
+        self.url = reverse('finances:expense_delete', args=[self.expense.pk])
+
+    def test_expense_delete_view_not_authenticated(self):
+        self.assertRequiresAuthentication(self.url)
+
+    def test_expense_delete_view_authenticated(self):
+
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Expense.objects.filter(pk=self.expense.pk).exists())

@@ -51,7 +51,7 @@ class ExpenseUpdateView(generic.UpdateView):
     success_url = reverse_lazy('finances:expense_index')
 
 
-# @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class ExpenseDeleteView(generic.DeleteView):
     model = Expense
     template_name = 'expense/confirm_delete.html'
