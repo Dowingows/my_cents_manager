@@ -3,5 +3,10 @@
 
 {% block content %}
 <h1> Seja bem-vindo, {{ user.username }} </h1>
-<p> Este é o `My Cents Manager`, ferramenta para gerir suas finanças pessoais
+<p> Este é o `My Cents Manager`, ferramenta para gerir suas finanças pessoais</p>
+
+<ul>
+    <li><a href="{% url 'finances:expense_index' %}">Despesas</a></li>
+</ul>
+
 {% endblock %}

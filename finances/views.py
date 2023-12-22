@@ -35,7 +35,7 @@ class ExpenseCreateView(generic.CreateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
-    success_url = reverse_lazy('finances:index')
+    success_url = reverse_lazy('finances:expense_index')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -43,11 +43,11 @@ class ExpenseUpdateView(generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
-    success_url = reverse_lazy('finances:index')
+    success_url = reverse_lazy('finances:expense_index')
 
 
 @method_decorator(login_required, name='dispatch')
 class ExpenseDeleteView(generic.DeleteView):
     model = Expense
     template_name = 'expense/confirm_delete.html'
-    success_url = reverse_lazy('finances:index')
+    success_url = reverse_lazy('finances:expense_index')
