@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 
-from .forms import ExpenseForm
+from .forms import ExpenseForm, IncomeForm
 from .mixins import UserFilteredMixin
 from .models import Expense, Income
 
@@ -68,15 +68,15 @@ class IncomeIndexView(UserFilteredMixin, generic.ListView):
 
 
 # @method_decorator(login_required, name='dispatch')
-# class IncomeCreateView(generic.CreateView):
-#     model = Income
-#     form_class = IncomeForm
-#     template_name = 'income/form.html'
-#     success_url = reverse_lazy('finances:income_index')
+class IncomeCreateView(generic.CreateView):
+    model = Income
+    form_class = IncomeForm
+    template_name = 'income/form.html'
+    success_url = reverse_lazy('finances:income_index')
 
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 # @method_decorator(login_required, name='dispatch')
