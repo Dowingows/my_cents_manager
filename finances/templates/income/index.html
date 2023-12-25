@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+    <a href="{% url 'finances:income_create' %}">Nova</a>
+{% endblock %}
+
+{% block content %}
+<h1>Entradas</h1>   
+<ul>
+    {% for income in incomes %}
+        <li><a href="{% url 'finances:income_edit' income.id %}">{{ income }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

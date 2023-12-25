@@ -23,4 +23,16 @@ urlpatterns = [
         views.ExpenseDeleteView.as_view(),
         name='expense_delete',
     ),
+    path('income', views.IncomeIndexView.as_view(), name='income_index'),
+    path('income/new', views.IncomeCreateView.as_view(), name='income_create'),
+    path(
+        'incomes/<int:pk>/edit/',
+        views.IncomeUpdateView.as_view(),
+        name='income_edit',
+    ),
+    path(
+        'incomes/<int:pk>/delete/',
+        views.IncomeDeleteView.as_view(),
+        name='income_delete',
+    ),
 ]
