@@ -210,3 +210,48 @@ class IncomeCreateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(income.amount, 150.00)
         self.assertEqual(str(income.received_date), '2023-12-10')
         self.assertEqual(str(income.expected_date), '2023-12-15')
+
+
+class IncomeUpdateViewTest(AuthenticationMixin, TestCase):
+    def test_income_update_view_not_authenticated(self):
+        url = reverse('finances:income_edit', args=(1,))
+        self.assertRequiresAuthentication(url)
+
+    def test_income_update_view_authenticated(self):
+        income = Income.objects.create(
+            user=self.test_user,
+            name='Test Income',
+            amount=75.00,
+            expected_date='2023-12-31',
+            received_date='2023-12-30',
+        )
+
+        self.authenticate_user()
+
+        url = reverse('finances:income_edit', args=(income.pk,))
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        updated_data = {
+            'name': 'Updated Income',
+            'amount': 100.00,
+            'expected_date': '2024-02-01',
+            'received_date': '2024-01-01',
+        }
+
+        response = self.client.post(url, data=updated_data)
+
+        self.assertRedirects(response, reverse('finances:income_index'))
+
+        updated_income = Income.objects.get(pk=income.pk)
+
+        self.assertEqual(updated_income.name, updated_data['name'])
+        self.assertEqual(updated_income.amount, updated_data['amount'])
+        self.assertEqual(
+            str(updated_income.expected_date), updated_data['expected_date']
+        )
+        self.assertEqual(
+            str(updated_income.received_date), updated_data['received_date']
+        )
