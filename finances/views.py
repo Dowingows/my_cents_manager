@@ -6,7 +6,7 @@ from django.views import generic
 
 from .forms import ExpenseForm
 from .mixins import UserFilteredMixin
-from .models import Expense
+from .models import Expense, Income
 
 
 def index(request):
@@ -54,3 +54,41 @@ class ExpenseDeleteView(generic.DeleteView):
     model = Expense
     template_name = 'expense/confirm_delete.html'
     success_url = reverse_lazy('finances:expense_index')
+
+
+class IncomeIndexView(UserFilteredMixin, generic.ListView):
+    model = Income
+    template_name = 'income/index.html'
+    context_object_name = 'incomes'
+
+
+# class IncomeDetailView(UserFilteredMixin, generic.DetailView):
+#     model = Income
+#     template_name = 'income/detail.html'
+
+
+# @method_decorator(login_required, name='dispatch')
+# class IncomeCreateView(generic.CreateView):
+#     model = Income
+#     form_class = IncomeForm
+#     template_name = 'income/form.html'
+#     success_url = reverse_lazy('finances:income_index')
+
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
+
+
+# @method_decorator(login_required, name='dispatch')
+# class IncomeUpdateView(generic.UpdateView):
+#     model = Income
+#     form_class = IncomeForm
+#     template_name = 'income/form.html'
+#     success_url = reverse_lazy('finances:income_index')
+
+
+# @method_decorator(login_required, name='dispatch')
+# class IncomeDeleteView(generic.DeleteView):
+#     model = Income
+#     template_name = 'income/confirm_delete.html'
+#     success_url = reverse_lazy('finances:income_index')
