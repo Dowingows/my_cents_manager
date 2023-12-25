@@ -255,3 +255,33 @@ class IncomeUpdateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(
             str(updated_income.received_date), updated_data['received_date']
         )
+
+
+class IncomeDeleteViewTest(AuthenticationMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.income = Income.objects.create(
+            name='Test Delete',
+            amount=50.00,
+            expected_date='2023-12-31',
+            received_date='2023-12-31',
+            user=self.test_user,
+        )
+
+        self.url = reverse('finances:income_delete', args=[self.income.pk])
+
+    def test_income_delete_view_not_authenticated(self):
+        self.assertRequiresAuthentication(self.url)
+
+    def test_income_delete_view_authenticated(self):
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Income.objects.filter(pk=self.income.pk).exists())
