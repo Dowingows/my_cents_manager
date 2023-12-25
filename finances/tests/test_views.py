@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from finances.models import Expense
+from finances.models import Expense, Income
 
 from .mixins import AuthenticationMixin
 
@@ -163,3 +163,50 @@ class ExpenseDeleteViewTest(AuthenticationMixin, TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Expense.objects.filter(pk=self.expense.pk).exists())
+
+
+class IncomeIndexViewTest(AuthenticationMixin, TestCase):
+    def test_income_index_view_not_authenticated(self):
+        url = reverse('finances:income_index')
+        self.assertRequiresAuthentication(url)
+
+    def test_income_index_view_authenticated(self):
+        self.authenticate_user()
+
+        url = reverse('finances:income_index')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+
+class IncomeCreateViewTest(AuthenticationMixin, TestCase):
+    def test_income_create_view_not_authenticated(self):
+        url = reverse('finances:income_create')
+        self.assertRequiresAuthentication(url)
+
+    def test_income_create_view_authenticated(self):
+        self.authenticate_user()
+
+        response = self.client.get(reverse('finances:income_create'))
+        self.assertEqual(response.status_code, 200)
+
+        form_data = {
+            'name': 'Test Income',
+            'amount': 150.00,
+            'received_date': '2023-12-10',
+            'expected_date': '2023-12-15',
+            'user_id': self.test_user.pk,
+        }
+
+        response = self.client.post(
+            reverse('finances:income_create'), data=form_data
+        )
+
+        self.assertRedirects(response, reverse('finances:income_index'))
+
+        self.assertTrue(Income.objects.filter(name='Test Income').exists())
+
+        income = Income.objects.get(name='Test Income')
+        self.assertEqual(income.amount, 150.00)
+        self.assertEqual(str(income.received_date), '2023-12-10')
+        self.assertEqual(str(income.expected_date), '2023-12-15')

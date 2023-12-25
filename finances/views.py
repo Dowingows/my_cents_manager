@@ -62,7 +62,7 @@ class IncomeIndexView(UserFilteredMixin, generic.ListView):
     context_object_name = 'incomes'
 
 
-# @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class IncomeCreateView(generic.CreateView):
     model = Income
     form_class = IncomeForm
