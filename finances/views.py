@@ -18,14 +18,12 @@ def home(request):
     return render(request, 'home.html')
 
 
-@method_decorator(login_required, name='dispatch')
 class IndexView(UserFilteredMixin, generic.ListView):
     model = Expense
     template_name = 'expense/index.html'
     context_object_name = 'expenses'
 
 
-# @method_decorator(login_required, name='dispatch')
 class DetailView(UserFilteredMixin, generic.DetailView):
     model = Expense
     template_name = 'expense/detail.html'
