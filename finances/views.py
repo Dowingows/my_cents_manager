@@ -62,11 +62,6 @@ class IncomeIndexView(UserFilteredMixin, generic.ListView):
     context_object_name = 'incomes'
 
 
-# class IncomeDetailView(UserFilteredMixin, generic.DetailView):
-#     model = Income
-#     template_name = 'income/detail.html'
-
-
 # @method_decorator(login_required, name='dispatch')
 class IncomeCreateView(generic.CreateView):
     model = Income
@@ -87,8 +82,8 @@ class IncomeUpdateView(generic.UpdateView):
     success_url = reverse_lazy('finances:income_index')
 
 
-# @method_decorator(login_required, name='dispatch')
-# class IncomeDeleteView(generic.DeleteView):
-#     model = Income
-#     template_name = 'income/confirm_delete.html'
-#     success_url = reverse_lazy('finances:income_index')
+@method_decorator(login_required, name='dispatch')
+class IncomeDeleteView(generic.DeleteView):
+    model = Income
+    template_name = 'income/confirm_delete.html'
+    success_url = reverse_lazy('finances:income_index')

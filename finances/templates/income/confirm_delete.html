@@ -1,0 +1,7 @@
+<h1>Confirmar remoção</h1>
+<p>Você gostaria de remover "{{ object.name }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Remover</button>
+    <a href="{% url 'finances:income_index' %}">Cancelar</a>
+</form>
