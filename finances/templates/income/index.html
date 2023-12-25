@@ -8,7 +8,7 @@
 <h1>Entradas</h1>   
 <ul>
     {% for income in incomes %}
-        <li><a href="#">{{ income }}</a></li>
+        <li><a href="{% url 'finances:income_edit' income.id %}">{{ income }}</a></li>
     {% endfor %}
 </ul>
 

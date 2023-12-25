@@ -79,12 +79,12 @@ class IncomeCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-# @method_decorator(login_required, name='dispatch')
-# class IncomeUpdateView(generic.UpdateView):
-#     model = Income
-#     form_class = IncomeForm
-#     template_name = 'income/form.html'
-#     success_url = reverse_lazy('finances:income_index')
+@method_decorator(login_required, name='dispatch')
+class IncomeUpdateView(generic.UpdateView):
+    model = Income
+    form_class = IncomeForm
+    template_name = 'income/form.html'
+    success_url = reverse_lazy('finances:income_index')
 
 
 # @method_decorator(login_required, name='dispatch')
