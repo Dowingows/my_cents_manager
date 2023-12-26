@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .forms import ExpenseForm, IncomeForm
-from .mixins import TransactionMixin, UserFilteredMixin
+from .mixins import ExpenseTransactionMixin, UserFilteredMixin
 from .models import Expense, Income
 
 
@@ -30,7 +30,7 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseCreateView(TransactionMixin, generic.CreateView):
+class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
@@ -47,7 +47,7 @@ class ExpenseCreateView(TransactionMixin, generic.CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseUpdateView(TransactionMixin, generic.UpdateView):
+class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
