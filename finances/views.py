@@ -89,7 +89,12 @@ class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+
+        response = super().form_valid(form)
+
+        self.process_transaction(form, 'income')
+
+        return response
 
 
 @method_decorator(login_required, name='dispatch')

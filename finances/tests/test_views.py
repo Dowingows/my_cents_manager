@@ -281,7 +281,7 @@ class IncomeCreateViewTest(AuthenticationTestMixin, TestCase):
         url = reverse('finances:income_create')
         self.assertRequiresAuthentication(url)
 
-    def test_income_create_view_authenticated(self):
+    def test_income_create_view_authenticated_with_received_date(self):
         self.authenticate_user()
 
         response = self.client.get(reverse('finances:income_create'))
@@ -307,6 +307,16 @@ class IncomeCreateViewTest(AuthenticationTestMixin, TestCase):
         self.assertEqual(income.amount, 150.00)
         self.assertEqual(str(income.received_date), '2023-12-10')
         self.assertEqual(str(income.expected_date), '2023-12-15')
+
+        # Verifique se uma transação foi criada
+        self.assertTrue(income.transaction is not None)
+        self.assertEqual(income.transaction.name, form_data['name'])
+        self.assertEqual(income.transaction.amount, form_data['amount'])
+        self.assertEqual(
+            str(income.transaction.transaction_date),
+            form_data['received_date'],
+        )
+        self.assertEqual(income.transaction.transaction_type, 'income')
 
 
 class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
