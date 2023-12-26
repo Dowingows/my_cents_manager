@@ -5,7 +5,7 @@ from . import views
 app_name = 'finances'
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.MonthlyView.as_view(), name='home'),
     path('expense', views.IndexView.as_view(), name='expense_index'),
     path(
         'expense/new', views.ExpenseCreateView.as_view(), name='expense_create'

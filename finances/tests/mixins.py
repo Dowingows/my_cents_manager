@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-class AuthenticationMixin:
+class AuthenticationTestMixin:
     def setUp(self):
         # Cria um usuário de teste
         self.test_user = User.objects.create_user(
