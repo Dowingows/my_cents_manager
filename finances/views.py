@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View, generic
 
@@ -14,7 +15,7 @@ from .mixins import (
     UserFilteredMixin,
 )
 from .models import Expense, Income
-from django.utils import timezone
+
 
 def index(request):
     return render(request, 'index.html')
@@ -149,10 +150,15 @@ class MonthlyView(View):
         prev_month = month - 1 if month > 1 else 12
         prev_year = year - 1 if month == 1 else year
 
-
         # Calcular links para o próximo e anterior
-        next_link = reverse('finances:monthly_view') + f'?month={next_month}&year={next_year}'
-        prev_link = reverse('finances:monthly_view') + f'?month={prev_month}&year={prev_year}'
+        next_link = (
+            reverse('finances:monthly_view')
+            + f'?month={next_month}&year={next_year}'
+        )
+        prev_link = (
+            reverse('finances:monthly_view')
+            + f'?month={prev_month}&year={prev_year}'
+        )
 
         context = {
             'transactions': transactions,
