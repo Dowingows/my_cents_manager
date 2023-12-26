@@ -1,27 +1,64 @@
-{% load moneyfilter  %}
+{% extends "base.html" %}
 
-<a href="{% url 'finances:expense_create' %}">New Expense</a>
-<a href="{% url 'finances:income_create' %}">New Income</a>
+{% load moneyfilter %}
 
-<h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
+{% block content %}
+<!-- Adicione os links para o Bootstrap (CSS) aqui -->
 
-<div>
-    <a href="{{ prev_link }}">Previous Month</a>
-    <a href="{{ next_link }}">Next Month</a>
+    <div class="row">
+      <div class="col">
+        <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
+        <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
+            <div class="btn-group" role="group">
+                <a href="{{ prev_link }}" class="btn btn-secondary">Previous Month</a>
+                <a href="{{ next_link }}" class="btn btn-secondary">Next Month</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">Total Income: {{ total_income|currency}}</p>
+                <p class="card-text">Total Expense:  {{ total_expense|currency }}</p>
+                <p class="card-text">Balance:  {{ balance|currency }}</p>
+            </div>
+        </div>
+    </div>
+<div class="row">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.name }}</td>
+                            <td>{{ transaction.amount | currency }}</td>
+                            <td>
+                                {% if transaction.transaction_type == 'expense' %}
+                                    <span class="badge badge-danger">Expense</span>
+                                {% elif transaction.transaction_type == 'income' %}
+                                    <span class="badge badge-success">Income</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+    </div>
 </div>
 
-<div>
-    <p>Total Income: {{ total_income|currency}}</p>
-    <p>Total Expense:  {{ total_expense|currency }}</p>
-    <p>Balance:  {{ balance|currency }}</p>
-</div>
-
-<ul>
-    {% for transaction in transactions %}
-        <li>
-            {{ transaction.name }}:
-            {{ transaction.amount | currency }} 
-            ({{ transaction.transaction_type }})
-        </li>
-    {% endfor %}
-</ul>
+{% endblock %}
