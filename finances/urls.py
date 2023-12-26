@@ -5,7 +5,7 @@ from . import views
 app_name = 'finances'
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.MonthlyView.as_view(), name='home'),
     path('expense', views.IndexView.as_view(), name='expense_index'),
     path(
         'expense/new', views.ExpenseCreateView.as_view(), name='expense_create'
@@ -35,5 +35,4 @@ urlpatterns = [
         views.IncomeDeleteView.as_view(),
         name='income_delete',
     ),
-    path('monthly/', views.MonthlyView.as_view(), name='monthly_view'),
 ]
