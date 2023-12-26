@@ -18,6 +18,18 @@ class TransactionMixin:
         """
         Processa a transação associada a uma despesa ou receita.
         """
+
+        # Verifica se o payment_date é nulo
+        if form.instance.payment_date is None:
+            # Se já existe uma transação, remova-a
+            if form.instance.transaction:
+                form.instance.transaction.delete()
+                form.instance.transaction = None
+
+            form.instance.save()
+
+            return  # Early return
+
         if form.instance.transaction:
             # Se já existe uma transação, atualiza seus dados
             form.instance.transaction.name = form.instance.name

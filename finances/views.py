@@ -41,9 +41,7 @@ class ExpenseCreateView(TransactionMixin, generic.CreateView):
 
         response = super().form_valid(form)
 
-        # Cria uma transação se a data de pagamento for fornecida
-        if form.instance.payment_date:
-            self.process_transaction(form, 'expense')
+        self.process_transaction(form, 'expense')
 
         return response
 
@@ -60,9 +58,7 @@ class ExpenseUpdateView(TransactionMixin, generic.UpdateView):
 
         response = super().form_valid(form)
 
-        # Processa a transação se a data de pagamento for fornecida
-        if form.instance.payment_date:
-            self.process_transaction(form, 'expense')
+        self.process_transaction(form, 'expense')
 
         return response
 

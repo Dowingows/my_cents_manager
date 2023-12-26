@@ -1,7 +1,7 @@
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
-from finances.models import Expense, Income
+from finances.models import Expense, Income, Transaction
 
 from .mixins import AuthenticationTestMixin
 
@@ -88,17 +88,36 @@ class ExpenseCreateViewTest(AuthenticationTestMixin, TestCase):
         )
         self.assertEqual(expense.transaction.transaction_type, 'expense')
 
+    def test_expense_create_view_authenticated_without_payment_date(self):
+        self.authenticate_user()
+
+        form_data = {
+            'name': 'Test Expense',
+            'amount': 100.00,
+            'due_date': '2023-12-20',
+        }
+
+        response = self.client.post(
+            reverse('finances:expense_create'), data=form_data
+        )
+
+        self.assertRedirects(response, reverse('finances:expense_index'))
+
+        self.assertTrue(Expense.objects.filter(name='Test Expense').exists())
+
+        expense = Expense.objects.get(name='Test Expense')
+        self.assertEqual(expense.amount, 100.00)
+        self.assertIsNone(expense.payment_date)
+        self.assertEqual(str(expense.due_date), '2023-12-20')
+
+        # Verifique se nenhuma transação foi criada
+        self.assertIsNone(expense.transaction)
+
 
 class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
-    def test_expense_update_view_not_authenticated(self):
-
-        url = reverse('finances:expense_edit', args=(1,))
-
-        self.assertRequiresAuthentication(url)
-
-    def test_expense_update_view_authenticated(self):
-
-        expense = Expense.objects.create(
+    def setUp(self):
+        super().setUp()
+        self.expense = Expense.objects.create(
             user=self.test_user,
             name='Test Expense',
             amount=50.00,
@@ -106,12 +125,29 @@ class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
             payment_date='2023-12-30',
         )
 
+        self.transaction = Transaction.objects.create(
+            user=self.test_user,
+            name=self.expense.name,
+            amount=self.expense.amount,
+            transaction_date=self.expense.payment_date,
+            transaction_type='expense',
+        )
+
+        self.expense.transaction = self.transaction
+
+        self.expense.save()
+
+        self.url = reverse_lazy(
+            'finances:expense_edit', args=(self.expense.pk,)
+        )
+
+    def test_expense_update_view_not_authenticated(self):
+        self.assertRequiresAuthentication(self.url)
+
+    def test_expense_update_view_authenticated_with_payment_date(self):
         self.authenticate_user()
 
-        url = reverse('finances:expense_edit', args=(expense.pk,))
-
-        response = self.client.get(url)
-
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
 
         updated_data = {
@@ -121,11 +157,11 @@ class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
             'payment_date': '2024-01-01',
         }
 
-        response = self.client.post(url, data=updated_data)
+        response = self.client.post(self.url, data=updated_data)
 
         self.assertRedirects(response, reverse('finances:expense_index'))
 
-        updated_expense = Expense.objects.get(pk=expense.pk)
+        updated_expense = Expense.objects.get(pk=self.expense.pk)
 
         self.assertEqual(updated_expense.name, updated_data['name'])
         self.assertEqual(updated_expense.amount, updated_data['amount'])
@@ -134,6 +170,48 @@ class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
         )
         self.assertEqual(
             str(updated_expense.payment_date), updated_data['payment_date']
+        )
+
+        # Verifique se a transação foi atualizada
+        self.assertEqual(
+            updated_expense.transaction.name, updated_data['name']
+        )
+        self.assertEqual(
+            updated_expense.transaction.amount, updated_data['amount']
+        )
+        self.assertEqual(
+            str(updated_expense.transaction.transaction_date),
+            updated_data['payment_date'],
+        )
+
+    def test_expense_update_view_authenticated_without_payment_date(self):
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        updated_data = {
+            'name': 'Updated Expense',
+            'amount': 75.00,
+            'due_date': '2023-02-01',
+        }
+
+        response = self.client.post(self.url, data=updated_data)
+
+        self.assertRedirects(response, reverse('finances:expense_index'))
+
+        updated_expense = Expense.objects.get(pk=self.expense.pk)
+
+        self.assertEqual(updated_expense.name, updated_data['name'])
+        self.assertEqual(updated_expense.amount, updated_data['amount'])
+        self.assertEqual(
+            str(updated_expense.due_date), updated_data['due_date']
+        )
+        self.assertIsNone(updated_expense.payment_date)
+
+        # Verifique se a transação foi removida
+        self.assertFalse(
+            Transaction.objects.filter(pk=self.transaction.pk).exists()
         )
 
 
