@@ -30,7 +30,7 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction = models.OneToOneField(
         Transaction,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='expense',
@@ -41,6 +41,12 @@ class Expense(models.Model):
             self.payment_date is None
             and self.due_date <= timezone.now().date()
         )
+
+    def delete(self, *args, **kwargs):
+        if self.transaction:
+            self.transaction.delete()
+
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name + ' (R$ {})'.format(self.amount)
@@ -59,7 +65,7 @@ class Income(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction = models.OneToOneField(
         Transaction,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='income',
