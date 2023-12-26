@@ -7,29 +7,54 @@
 
     <div class="row">
       <div class="col">
-        <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
-        <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
+        <a href="{% url 'finances:income_create' %}" class="btn btn-secondary">New Income</a>
+        <a href="{% url 'finances:expense_create' %}" class="btn btn-primary">New Expense</a>
       </div>
     </div>
     <div class="row">
         <div class="col">
-            <h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
-            <div class="btn-group" role="group">
-                <a href="{{ prev_link }}" class="btn btn-secondary">Previous Month</a>
-                <a href="{{ next_link }}" class="btn btn-secondary">Next Month</a>
-            </div>
+            <h2>Monthly Financial Overview</h2>
         </div>
     </div>
-
-    <div class="mt-4">
-        <div class="card">
+    <div class="row">
+        <div class="col-md-4 mt-4">
+          <div class="card bg-white">
             <div class="card-body">
-                <p class="card-text">Total Income: {{ total_income|currency}}</p>
-                <p class="card-text">Total Expense:  {{ total_expense|currency }}</p>
-                <p class="card-text">Balance:  {{ balance|currency }}</p>
+              <h5 class="card-title">Total Income</h5>
+              <p class="card-text">{{ total_income|currency }}</p>
             </div>
+          </div>
+        </div>
+        <div class="col-md-4 mt-4">
+          <div class="card bg-white">
+            <div class="card-body">
+              <h5 class="card-title">Total Expense</h5>
+              <p class="card-text">{{ total_expense|currency }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mt-4">
+          <div class="card bg-white">
+            <div class="card-body">
+              <h5 class="card-title">Balance</h5>
+              <p class="card-text">{{ balance|currency }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-3">
+            <a href="{{ prev_link }}" class="btn btn-secondary d-block">Previous Month</a>
+        </div>
+        <div class="col text-center">
+            <h2>{{ month }}/{{ year }}</h2>
+        </div>
+        <div class="col-3">
+            <a href="{{ next_link }}" class="btn btn-secondary d-block">Next Month</a>
         </div>
     </div>
+    
 <div class="row">
     <div class="col">
         <div class="table-responsive">
@@ -48,9 +73,9 @@
                             <td>{{ transaction.amount | currency }}</td>
                             <td>
                                 {% if transaction.transaction_type == 'expense' %}
-                                    <span class="badge badge-danger">Expense</span>
+                                <span class="badge bg-danger">Expense</span>
                                 {% elif transaction.transaction_type == 'income' %}
-                                    <span class="badge badge-success">Income</span>
+                                <span class="badge bg-primary">Income</span>
                                 {% endif %}
                             </td>
                         </tr>
