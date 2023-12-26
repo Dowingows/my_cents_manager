@@ -320,12 +320,9 @@ class IncomeCreateViewTest(AuthenticationTestMixin, TestCase):
 
 
 class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
-    def test_income_update_view_not_authenticated(self):
-        url = reverse('finances:income_edit', args=(1,))
-        self.assertRequiresAuthentication(url)
-
-    def test_income_update_view_authenticated(self):
-        income = Income.objects.create(
+    def setUp(self):
+        super().setUp()
+        self.income = Income.objects.create(
             user=self.test_user,
             name='Test Income',
             amount=75.00,
@@ -333,11 +330,29 @@ class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
             received_date='2023-12-30',
         )
 
+        self.transaction = Transaction.objects.create(
+            user=self.test_user,
+            name=self.income.name,
+            amount=self.income.amount,
+            transaction_date=self.income.received_date,
+            transaction_type='income',
+        )
+
+        self.income.transaction = self.transaction
+
+        self.income.save()
+
+        self.url = reverse_lazy('finances:income_edit', args=(self.income.pk,))
+
+    def test_income_update_view_not_authenticated(self):
+        url = reverse('finances:income_edit', args=(1,))
+        self.assertRequiresAuthentication(url)
+
+    def test_income_update_view_authenticated_with_received_date(self):
+
         self.authenticate_user()
 
-        url = reverse('finances:income_edit', args=(income.pk,))
-
-        response = self.client.get(url)
+        response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
 
@@ -348,11 +363,11 @@ class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
             'received_date': '2024-01-01',
         }
 
-        response = self.client.post(url, data=updated_data)
+        response = self.client.post(self.url, data=updated_data)
 
         self.assertRedirects(response, reverse('finances:income_index'))
 
-        updated_income = Income.objects.get(pk=income.pk)
+        updated_income = Income.objects.get(pk=self.income.pk)
 
         self.assertEqual(updated_income.name, updated_data['name'])
         self.assertEqual(updated_income.amount, updated_data['amount'])
@@ -361,6 +376,16 @@ class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
         )
         self.assertEqual(
             str(updated_income.received_date), updated_data['received_date']
+        )
+
+        # Verifique se a transação foi atualizada
+        self.assertEqual(updated_income.transaction.name, updated_data['name'])
+        self.assertEqual(
+            updated_income.transaction.amount, updated_data['amount']
+        )
+        self.assertEqual(
+            str(updated_income.transaction.transaction_date),
+            updated_data['received_date'],
         )
 
 
