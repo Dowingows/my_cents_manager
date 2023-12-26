@@ -56,19 +56,14 @@ class ExpenseCreateViewTest(AuthenticationTestMixin, TestCase):
 
         self.assertRequiresAuthentication(url)
 
-    def test_expense_create_view_authenticated(self):
-
+    def test_expense_create_view_authenticated_with_payment_date(self):
         self.authenticate_user()
-
-        response = self.client.get(reverse('finances:expense_create'))
-        self.assertEqual(response.status_code, 200)
 
         form_data = {
             'name': 'Test Expense',
             'amount': 100.00,
             'payment_date': '2023-12-15',
             'due_date': '2023-12-20',
-            'user_id': self.test_user.pk,
         }
 
         response = self.client.post(
@@ -83,6 +78,15 @@ class ExpenseCreateViewTest(AuthenticationTestMixin, TestCase):
         self.assertEqual(expense.amount, 100.00)
         self.assertEqual(str(expense.payment_date), '2023-12-15')
         self.assertEqual(str(expense.due_date), '2023-12-20')
+
+        # Verifique se uma transação foi criada
+        self.assertTrue(expense.transaction is not None)
+        self.assertEqual(expense.transaction.name, 'Test Expense')
+        self.assertEqual(expense.transaction.amount, 100.00)
+        self.assertEqual(
+            str(expense.transaction.transaction_date), '2023-12-15'
+        )
+        self.assertEqual(expense.transaction.transaction_type, 'expense')
 
 
 class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
