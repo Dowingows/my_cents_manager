@@ -388,6 +388,39 @@ class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
             updated_data['received_date'],
         )
 
+    def test_income_update_view_authenticated_without_received_date(self):
+
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        updated_data = {
+            'name': 'Updated Income',
+            'amount': 100.00,
+            'expected_date': '2024-02-01',
+        }
+
+        response = self.client.post(self.url, data=updated_data)
+
+        self.assertRedirects(response, reverse('finances:income_index'))
+
+        updated_income = Income.objects.get(pk=self.income.pk)
+
+        self.assertEqual(updated_income.name, updated_data['name'])
+        self.assertEqual(updated_income.amount, updated_data['amount'])
+        self.assertEqual(
+            str(updated_income.expected_date), updated_data['expected_date']
+        )
+
+        self.assertIsNone(updated_income.received_date)
+
+        # Verifique se a transação foi removida
+        self.assertFalse(
+            Transaction.objects.filter(pk=self.transaction.pk).exists()
+        )
+
 
 class IncomeDeleteViewTest(AuthenticationTestMixin, TestCase):
     def setUp(self):
