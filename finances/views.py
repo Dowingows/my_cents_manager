@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
-from django.views import generic
+from django.views import View, generic
+
+from finances.models import Transaction
 
 from .forms import ExpenseForm, IncomeForm
 from .mixins import (
@@ -11,7 +14,7 @@ from .mixins import (
     UserFilteredMixin,
 )
 from .models import Expense, Income
-
+from django.utils import timezone
 
 def index(request):
     return render(request, 'index.html')
@@ -111,3 +114,55 @@ class IncomeDeleteView(generic.DeleteView):
     model = Income
     template_name = 'income/confirm_delete.html'
     success_url = reverse_lazy('finances:income_index')
+
+
+class MonthlyView(View):
+    template_name = 'monthly_view.html'
+
+    def get(self, request, *args, **kwargs):
+        month = int(request.GET.get('month', timezone.now().month))
+        year = int(request.GET.get('year', timezone.now().year))
+
+        transactions = Transaction.objects.filter(
+            user=request.user,
+            transaction_date__month=month,
+            transaction_date__year=year,
+        )
+
+        total_income = (
+            transactions.filter(transaction_type='income').aggregate(
+                Sum('amount')
+            )['amount__sum']
+            or 0
+        )
+        total_expense = (
+            transactions.filter(transaction_type='expense').aggregate(
+                Sum('amount')
+            )['amount__sum']
+            or 0
+        )
+        balance = total_income + total_expense
+
+        # Calcular o próximo mês e o mês anterior
+        next_month = (month % 12) + 1
+        next_year = year + 1 if next_month == 1 else year
+        prev_month = month - 1 if month > 1 else 12
+        prev_year = year - 1 if month == 1 else year
+
+
+        # Calcular links para o próximo e anterior
+        next_link = reverse('finances:monthly_view') + f'?month={next_month}&year={next_year}'
+        prev_link = reverse('finances:monthly_view') + f'?month={prev_month}&year={prev_year}'
+
+        context = {
+            'transactions': transactions,
+            'total_income': total_income,
+            'total_expense': total_expense,
+            'balance': balance,
+            'month': month,
+            'year': year,
+            'next_link': next_link,
+            'prev_link': prev_link,
+        }
+
+        return render(request, self.template_name, context)

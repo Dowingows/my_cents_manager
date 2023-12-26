@@ -35,4 +35,6 @@ urlpatterns = [
         views.IncomeDeleteView.as_view(),
         name='income_delete',
     ),
+
+    path('monthly/', views.MonthlyView.as_view(), name='monthly_view'),
 ]
