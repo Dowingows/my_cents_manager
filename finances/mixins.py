@@ -20,6 +20,10 @@ class TransactionMixinBase(ABC):
     def get_date_field(self, form):
         pass
 
+    @abstractmethod
+    def get_signed_amount(self, form):
+        pass
+
     def process_transaction(self, form, transaction_type):
         """
         Processa a transação associada a uma despesa ou receita.
@@ -40,7 +44,7 @@ class TransactionMixinBase(ABC):
         if form.instance.transaction:
             # Se já existe uma transação, atualiza seus dados
             form.instance.transaction.name = form.instance.name
-            form.instance.transaction.amount = form.instance.amount
+            form.instance.transaction.amount = self.get_signed_amount(form)
             setattr(
                 form.instance.transaction,
                 'transaction_date',
@@ -53,7 +57,7 @@ class TransactionMixinBase(ABC):
             transaction = Transaction.objects.create(
                 user=form.instance.user,
                 name=form.instance.name,
-                amount=form.instance.amount,
+                amount=self.get_signed_amount(form),
                 transaction_date=getattr(form.instance, date_field),
                 transaction_type=transaction_type,
             )
@@ -65,7 +69,15 @@ class ExpenseTransactionMixin(TransactionMixinBase):
     def get_date_field(self, form):
         return 'payment_date'
 
+    def get_signed_amount(self, form):
+        amount = form.instance.amount
+        return -abs(amount)
+
 
 class IncomeTransactionMixin(TransactionMixinBase):
     def get_date_field(self, form):
         return 'received_date'
+
+    def get_signed_amount(self, form):
+        amount = form.instance.amount
+        return abs(amount)
