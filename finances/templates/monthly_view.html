@@ -1,4 +1,8 @@
 {% load moneyfilter  %}
+
+<a href="{% url 'finances:expense_create' %}">New Expense</a>
+<a href="{% url 'finances:expense_create' %}">New Income</a>
+
 <h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
 <div>
     <a href="{{ prev_link }}">Previous Month</a>
