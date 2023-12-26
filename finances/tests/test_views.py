@@ -434,6 +434,18 @@ class IncomeDeleteViewTest(AuthenticationTestMixin, TestCase):
             user=self.test_user,
         )
 
+        self.transaction = Transaction.objects.create(
+            user=self.test_user,
+            name=self.income.name,
+            amount=self.income.amount,
+            transaction_date=self.income.received_date,
+            transaction_type='income',
+        )
+
+        self.income.transaction = self.transaction
+
+        self.income.save()
+
         self.url = reverse('finances:income_delete', args=[self.income.pk])
 
     def test_income_delete_view_not_authenticated(self):
@@ -450,3 +462,7 @@ class IncomeDeleteViewTest(AuthenticationTestMixin, TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Income.objects.filter(pk=self.income.pk).exists())
+
+        self.assertFalse(
+            Transaction.objects.filter(pk=self.transaction.pk).exists()
+        )

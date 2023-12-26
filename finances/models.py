@@ -74,6 +74,12 @@ class Income(models.Model):
     def __str__(self):
         return self.name + ' (R$ {})'.format(self.amount)
 
+    def delete(self, *args, **kwargs):
+        if self.transaction:
+            self.transaction.delete()
+
+        super().delete(*args, **kwargs)
+
     class Meta:
         verbose_name = 'Income'
         verbose_name_plural = 'Incomes'
