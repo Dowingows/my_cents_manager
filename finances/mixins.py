@@ -30,16 +30,14 @@ class TransactionMixinBase(ABC):
         """
         date_field = self.get_date_field(form)
 
-        # Verifica se a data é nula
         if getattr(form.instance, date_field) is None:
-            # Se já existe uma transação, remova-a
             if form.instance.transaction:
                 form.instance.transaction.delete()
                 form.instance.transaction = None
 
             form.instance.save()
 
-            return  # Early return
+            return
 
         if form.instance.transaction:
             # Se já existe uma transação, atualiza seus dados
