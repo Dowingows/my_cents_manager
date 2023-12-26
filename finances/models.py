@@ -3,6 +3,24 @@ from django.db import models
 from django.utils import timezone
 
 
+class Transaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('income', 'Income'),
+        ('expense', 'Expense'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_date = models.DateField()
+    transaction_type = models.CharField(
+        max_length=7, choices=TRANSACTION_TYPES
+    )
+
+    def __str__(self):
+        return f'{self.name} ({self.amount})'
+
+
 class Expense(models.Model):
     name = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -10,6 +28,13 @@ class Expense(models.Model):
     due_date = models.DateField()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    transaction = models.OneToOneField(
+        Transaction,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='expense',
+    )
 
     def is_delayed(self):
         return (
@@ -32,6 +57,13 @@ class Income(models.Model):
     received_date = models.DateField(null=True, blank=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    transaction = models.OneToOneField(
+        Transaction,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='income',
+    )
 
     def __str__(self):
         return self.name + ' (R$ {})'.format(self.amount)
@@ -39,21 +71,3 @@ class Income(models.Model):
     class Meta:
         verbose_name = 'Income'
         verbose_name_plural = 'Incomes'
-
-
-class Transaction(models.Model):
-    TRANSACTION_TYPES = (
-        ('income', 'Income'),
-        ('expense', 'Expense'),
-    )
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_date = models.DateField()
-    transaction_type = models.CharField(
-        max_length=7, choices=TRANSACTION_TYPES
-    )
-
-    def __str__(self):
-        return f'{self.name} ({self.amount})'
