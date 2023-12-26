@@ -82,7 +82,7 @@ class ExpenseCreateViewTest(AuthenticationTestMixin, TestCase):
         # Verifique se uma transação foi criada
         self.assertTrue(expense.transaction is not None)
         self.assertEqual(expense.transaction.name, 'Test Expense')
-        self.assertEqual(expense.transaction.amount, 100.00)
+        self.assertEqual(expense.transaction.amount, -100.00)
         self.assertEqual(
             str(expense.transaction.transaction_date), '2023-12-15'
         )
@@ -177,7 +177,7 @@ class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
             updated_expense.transaction.name, updated_data['name']
         )
         self.assertEqual(
-            updated_expense.transaction.amount, updated_data['amount']
+            updated_expense.transaction.amount, -updated_data['amount']
         )
         self.assertEqual(
             str(updated_expense.transaction.transaction_date),

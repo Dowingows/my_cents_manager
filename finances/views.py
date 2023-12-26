@@ -5,7 +5,11 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .forms import ExpenseForm, IncomeForm
-from .mixins import ExpenseTransactionMixin, UserFilteredMixin
+from .mixins import (
+    ExpenseTransactionMixin,
+    IncomeTransactionMixin,
+    UserFilteredMixin,
+)
 from .models import Expense, Income
 
 
@@ -77,7 +81,7 @@ class IncomeIndexView(UserFilteredMixin, generic.ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class IncomeCreateView(generic.CreateView):
+class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
     model = Income
     form_class = IncomeForm
     template_name = 'income/form.html'
