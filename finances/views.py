@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .forms import ExpenseForm, IncomeForm
-from .mixins import UserFilteredMixin
+from .mixins import TransactionMixin, UserFilteredMixin
 from .models import Expense, Income
 
 
@@ -30,7 +30,7 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseCreateView(generic.CreateView):
+class ExpenseCreateView(TransactionMixin, generic.CreateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
@@ -38,15 +38,33 @@ class ExpenseCreateView(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+
+        response = super().form_valid(form)
+
+        # Cria uma transação se a data de pagamento for fornecida
+        if form.instance.payment_date:
+            self.process_transaction(form, 'expense')
+
+        return response
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseUpdateView(generic.UpdateView):
+class ExpenseUpdateView(TransactionMixin, generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/form.html'
     success_url = reverse_lazy('finances:expense_index')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+
+        response = super().form_valid(form)
+
+        # Processa a transação se a data de pagamento for fornecida
+        if form.instance.payment_date:
+            self.process_transaction(form, 'expense')
+
+        return response
 
 
 @method_decorator(login_required, name='dispatch')
