@@ -1,21 +1,27 @@
 {% load moneyfilter  %}
 
 <a href="{% url 'finances:expense_create' %}">New Expense</a>
-<a href="{% url 'finances:expense_create' %}">New Income</a>
+<a href="{% url 'finances:income_create' %}">New Income</a>
 
 <h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
+
 <div>
     <a href="{{ prev_link }}">Previous Month</a>
     <a href="{{ next_link }}">Next Month</a>
 </div>
 
-<p>Total Income: {{ total_income|currency}}</p>
-<p>Total Expense:  {{ total_expense|currency }}</p>
-<p>Balance:  {{ balance|currency }}</p>
+<div>
+    <p>Total Income: {{ total_income|currency}}</p>
+    <p>Total Expense:  {{ total_expense|currency }}</p>
+    <p>Balance:  {{ balance|currency }}</p>
+</div>
 
 <ul>
     {% for transaction in transactions %}
-        <li>{{ transaction.name }}: {{ transaction.amount |currency }} ({{ transaction.transaction_type }})</li>
+        <li>
+            {{ transaction.name }}:
+            {{ transaction.amount | currency }} 
+            ({{ transaction.transaction_type }})
+        </li>
     {% endfor %}
 </ul>
-
