@@ -3,10 +3,10 @@ from django.urls import reverse
 
 from finances.models import Expense, Income
 
-from .mixins import AuthenticationMixin
+from .mixins import AuthenticationTestMixin
 
 
-class ExpenseIndexViewTest(AuthenticationMixin, TestCase):
+class ExpenseIndexViewTest(AuthenticationTestMixin, TestCase):
     def test_expense_index_view_not_authenticated(self):
 
         url = reverse('finances:expense_index')
@@ -23,7 +23,7 @@ class ExpenseIndexViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ExpenseDetailViewTest(AuthenticationMixin, TestCase):
+class ExpenseDetailViewTest(AuthenticationTestMixin, TestCase):
     def test_expense_detail_view_not_authenticated(self):
 
         url = reverse('finances:expense_detail', args=(1,))
@@ -49,7 +49,7 @@ class ExpenseDetailViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ExpenseCreateViewTest(AuthenticationMixin, TestCase):
+class ExpenseCreateViewTest(AuthenticationTestMixin, TestCase):
     def test_expense_create_view_not_authenticated(self):
 
         url = reverse('finances:expense_create')
@@ -85,7 +85,7 @@ class ExpenseCreateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(str(expense.due_date), '2023-12-20')
 
 
-class ExpenseUpdateViewTest(AuthenticationMixin, TestCase):
+class ExpenseUpdateViewTest(AuthenticationTestMixin, TestCase):
     def test_expense_update_view_not_authenticated(self):
 
         url = reverse('finances:expense_edit', args=(1,))
@@ -133,7 +133,7 @@ class ExpenseUpdateViewTest(AuthenticationMixin, TestCase):
         )
 
 
-class ExpenseDeleteViewTest(AuthenticationMixin, TestCase):
+class ExpenseDeleteViewTest(AuthenticationTestMixin, TestCase):
     def setUp(self):
 
         super().setUp()
@@ -165,7 +165,7 @@ class ExpenseDeleteViewTest(AuthenticationMixin, TestCase):
         self.assertFalse(Expense.objects.filter(pk=self.expense.pk).exists())
 
 
-class IncomeIndexViewTest(AuthenticationMixin, TestCase):
+class IncomeIndexViewTest(AuthenticationTestMixin, TestCase):
     def test_income_index_view_not_authenticated(self):
         url = reverse('finances:income_index')
         self.assertRequiresAuthentication(url)
@@ -179,7 +179,7 @@ class IncomeIndexViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class IncomeCreateViewTest(AuthenticationMixin, TestCase):
+class IncomeCreateViewTest(AuthenticationTestMixin, TestCase):
     def test_income_create_view_not_authenticated(self):
         url = reverse('finances:income_create')
         self.assertRequiresAuthentication(url)
@@ -212,7 +212,7 @@ class IncomeCreateViewTest(AuthenticationMixin, TestCase):
         self.assertEqual(str(income.expected_date), '2023-12-15')
 
 
-class IncomeUpdateViewTest(AuthenticationMixin, TestCase):
+class IncomeUpdateViewTest(AuthenticationTestMixin, TestCase):
     def test_income_update_view_not_authenticated(self):
         url = reverse('finances:income_edit', args=(1,))
         self.assertRequiresAuthentication(url)
@@ -257,7 +257,7 @@ class IncomeUpdateViewTest(AuthenticationMixin, TestCase):
         )
 
 
-class IncomeDeleteViewTest(AuthenticationMixin, TestCase):
+class IncomeDeleteViewTest(AuthenticationTestMixin, TestCase):
     def setUp(self):
         super().setUp()
 
