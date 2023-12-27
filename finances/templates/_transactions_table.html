@@ -15,7 +15,6 @@
                
                 {% for transaction in transactions %}
                     <tr>
-                        <td>{{ transaction.income.id }}</td>
                         <td>{{ transaction.name }}</td>
                         <td>{{ transaction.amount | currency }}</td>
                         <td>
