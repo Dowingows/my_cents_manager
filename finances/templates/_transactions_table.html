@@ -1,0 +1,31 @@
+{% load moneyfilter %}
+<div class="col">
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in value %}
+                    <tr>
+                        <td>{{ transaction.name }}</td>
+                        <td>{{ transaction.amount | currency }}</td>
+                        <td>
+                            {% if transaction.transaction_type == 'expense' %}
+                            <span class="badge bg-danger">Expense</span>
+                            {% elif transaction.transaction_type == 'income' %}
+                            <span class="badge bg-primary">Income</span>
+                            {% endif %}
+                        </td>
+                        <td>{{  transaction.transaction_date }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+</div>

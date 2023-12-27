@@ -1,0 +1,10 @@
+<!-- _overview_card.html -->
+{% load moneyfilter %}
+<div class="col-md-4 mt-4">
+    <div class="card bg-white">
+        <div class="card-body">
+            <h5 class="card-title">{{ title }}</h5>
+            <p class="card-text">{{ value|currency }}</p>
+        </div>
+    </div>
+</div>

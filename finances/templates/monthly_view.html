@@ -15,75 +15,15 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 mt-4">
-          <div class="card bg-white">
-            <div class="card-body">
-              <h5 class="card-title">Total Income</h5>
-              <p class="card-text">{{ total_income|currency }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mt-4">
-          <div class="card bg-white">
-            <div class="card-body">
-              <h5 class="card-title">Total Expense</h5>
-              <p class="card-text">{{ total_expense|currency }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mt-4">
-          <div class="card bg-white">
-            <div class="card-body">
-              <h5 class="card-title">Balance</h5>
-              <p class="card-text">{{ balance|currency }}</p>
-            </div>
-          </div>
-        </div>
+        {% include '_overview_card.html' with title="Total Income" value=total_income %}
+        {% include '_overview_card.html' with title="Total Expense" value=total_expense %}
+        {% include '_overview_card.html' with title="Balance" value=balance %}
       </div>
 
-      <div class="row mt-4">
-        <div class="col-3">
-            <a href="{{ prev_link }}" class="btn btn-secondary d-block">Previous Month</a>
-        </div>
-        <div class="col text-center">
-            <h2>{{ month }}/{{ year }}</h2>
-        </div>
-        <div class="col-3">
-            <a href="{{ next_link }}" class="btn btn-secondary d-block">Next Month</a>
-        </div>
-    </div>
+      {% include '_month_navigation.html' %}
     
 <div class="row">
-    <div class="col">
-        <div class="table-responsive">
-            <table class="table mt-4">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for transaction in transactions %}
-                        <tr>
-                            <td>{{ transaction.name }}</td>
-                            <td>{{ transaction.amount | currency }}</td>
-                            <td>
-                                {% if transaction.transaction_type == 'expense' %}
-                                <span class="badge bg-danger">Expense</span>
-                                {% elif transaction.transaction_type == 'income' %}
-                                <span class="badge bg-primary">Income</span>
-                                {% endif %}
-                            </td>
-                            <td>{{  transaction.transaction_date }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </div>
-    </div>
+  {% include '_transactions_table.html' with value=transactions %}
 </div>
 
 {% endblock %}
