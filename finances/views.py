@@ -37,7 +37,7 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/new.html'
-    success_url = reverse_lazy('finances:home')
+    success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -54,7 +54,7 @@ class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/update.html'
-    success_url = reverse_lazy('finances:home')
+    success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
         response = super().form_valid(form)
