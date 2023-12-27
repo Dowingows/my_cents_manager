@@ -12,8 +12,10 @@
                 </tr>
             </thead>
             <tbody>
+               
                 {% for transaction in transactions %}
                     <tr>
+                        <td>{{ transaction.income.id }}</td>
                         <td>{{ transaction.name }}</td>
                         <td>{{ transaction.amount | currency }}</td>
                         <td>
@@ -25,16 +27,12 @@
                         </td>
                         <td>{{  transaction.transaction_date }}</td>
                         <td>
-                            {% if transaction.expense %}
+                            {% if transaction.expense.id %}
                             <a href="{% url 'finances:expense_edit' transaction.expense.id %}">
                                 edit
                             </a>
-                            {% endif %}
-
-                            {% if transaction.transaction_type == 'income' %}
-                            <a href="#">
-                                edit
-                            </a>
+                            {% elif transaction.income.id %}
+                                <a href="{% url 'finances:income_edit' transaction.income.id %}">edit</a>
                             {% endif %}
                         </td>
                     </tr>
