@@ -36,7 +36,7 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
     model = Expense
     form_class = ExpenseForm
-    template_name = 'expense/form.html'
+    template_name = 'expense/new.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
@@ -53,7 +53,7 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
 class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
-    template_name = 'expense/form.html'
+    template_name = 'expense/update.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
