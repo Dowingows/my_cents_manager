@@ -79,7 +79,7 @@ class IncomeIndexView(UserFilteredMixin, generic.ListView):
 class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
     model = Income
     form_class = IncomeForm
-    template_name = 'income/form.html'
+    template_name = 'income/new.html'
     success_url = reverse_lazy('finances:income_index')
 
     def form_valid(self, form):
@@ -96,7 +96,7 @@ class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
 class IncomeUpdateView(IncomeTransactionMixin, generic.UpdateView):
     model = Income
     form_class = IncomeForm
-    template_name = 'income/form.html'
+    template_name = 'income/update.html'
     success_url = reverse_lazy('finances:income_index')
 
     def form_valid(self, form):
