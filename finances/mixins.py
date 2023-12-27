@@ -79,3 +79,24 @@ class IncomeTransactionMixin(TransactionMixinBase):
     def get_signed_amount(self, form):
         amount = form.instance.amount
         return abs(amount)
+
+
+class FilterMixin:
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        queryset = queryset.filter(user=user)
+
+        search_input = self.request.GET.get('search-field') or ''
+        if search_input:
+            queryset = self.filter_by_search(queryset, search_input)
+
+        return queryset
+
+    def filter_by_search(self, queryset, search_input):
+        """
+        Filtra o queryset com base no campo de pesquisa.
+        """
+        raise NotImplementedError(
+            'Subclasses of FilterMixin must provide a filter_by_search method.'
+        )

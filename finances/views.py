@@ -11,6 +11,7 @@ from finances.models import Transaction
 from .forms import ExpenseForm, IncomeForm
 from .mixins import (
     ExpenseTransactionMixin,
+    FilterMixin,
     IncomeTransactionMixin,
     UserFilteredMixin,
 )
@@ -69,10 +70,13 @@ class ExpenseDeleteView(generic.DeleteView):
     success_url = reverse_lazy('finances:expense_index')
 
 
-class IncomeIndexView(UserFilteredMixin, generic.ListView):
+class IncomeIndexView(FilterMixin, UserFilteredMixin, generic.ListView):
     model = Income
     template_name = 'income/index.html'
     context_object_name = 'incomes'
+
+    def filter_by_search(self, queryset, search_input):
+        return queryset.filter(name__contains=search_input)
 
 
 @method_decorator(login_required, name='dispatch')

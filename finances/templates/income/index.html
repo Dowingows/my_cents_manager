@@ -1,15 +1,40 @@
 {% extends "base.html" %}
+{% load moneyfilter %}
 
-{% block sidebar %}
-    <a href="{% url 'finances:income_create' %}">Nova</a>
-{% endblock %}
 
 {% block content %}
-<h1>Entradas</h1>   
-<ul>
-    {% for income in incomes %}
-        <li><a href="{% url 'finances:income_edit' income.id %}">{{ income }}</a></li>
-    {% endfor %}
-</ul>
+    <h1>Entradas</h1>
+   
 
+    <form method="GET">
+        <input type="text" name="search-field" value="{{search_input}}"/>
+        <input type="submit" value="search"  class="btn btn-secondary"/>
+    </form>
+    <a href="{% url 'finances:income_create' %}" class="btn btn-primary">New</a>
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Expected Date</th>
+                    <th>Received Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for income in incomes %}
+                    <tr>
+                        <td>{{ income.name }}</td>
+                        <td>{{ income.amount | currency }}</td>
+                        <td>{{ income.expected_date }}</td>
+                        <td>{{ income.received_date }}</td>
+                        <td>
+                            <a href="{% url 'finances:income_edit' income.id %}">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
