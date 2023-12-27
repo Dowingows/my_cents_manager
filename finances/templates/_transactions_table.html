@@ -8,6 +8,7 @@
                     <th>Amount</th>
                     <th>Type</th>
                     <th>Date</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,6 +24,19 @@
                             {% endif %}
                         </td>
                         <td>{{  transaction.transaction_date }}</td>
+                        <td>
+                            {% if transaction.expense %}
+                            <a href="{% url 'finances:expense_edit' transaction.expense.id %}">
+                                edit
+                            </a>
+                            {% endif %}
+
+                            {% if transaction.transaction_type == 'income' %}
+                            <a href="#">
+                                edit
+                            </a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

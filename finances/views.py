@@ -155,7 +155,7 @@ class MonthlyView(View):
             user=user,
             transaction_date__month=month,
             transaction_date__year=year,
-        )
+        ).order_by('-transaction_date')
 
     def calculate_totals(self, transactions):
         total_income = (
