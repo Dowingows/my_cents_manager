@@ -22,10 +22,13 @@ def index(request):
     return render(request, 'index.html')
 
 
-class IndexView(UserFilteredMixin, generic.ListView):
+class IndexView(FilterMixin, UserFilteredMixin, generic.ListView):
     model = Expense
     template_name = 'expense/index.html'
     context_object_name = 'expenses'
+
+    def filter_by_search(self, queryset, search_input):
+        return queryset.filter(name__contains=search_input)
 
 
 class DetailView(UserFilteredMixin, generic.DetailView):
