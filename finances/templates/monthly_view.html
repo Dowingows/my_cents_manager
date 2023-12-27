@@ -3,27 +3,27 @@
 {% load moneyfilter %}
 
 {% block content %}
-<!-- Adicione os links para o Bootstrap (CSS) aqui -->
 
-    <div class="row">
-        <div class="col-9">
-            <h2>Monthly Financial Overview</h2>
-        </div>
-        <div class="col">
-          <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
-          <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
-        </div>
-    </div>
-    <div class="row">
-        {% include '_overview_card.html' with title="Total Income" value=total_income %}
-        {% include '_overview_card.html' with title="Total Expense" value=total_expense %}
-        {% include '_overview_card.html' with title="Balance" value=balance %}
-      </div>
-
-      {% include '_month_navigation.html' %}
-    
 <div class="row">
-  {% include '_transactions_table.html' with value=transactions %}
+    <div class="col-9">
+        <h2>Monthly Financial Overview</h2>
+    </div>
+    <div class="col">
+      <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
+      <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
+    </div>
+</div>
+
+<div class="row">
+  {% include '_overview_card.html' with title="Total Income" value=total_income %}
+  {% include '_overview_card.html' with title="Total Expense" value=total_expense %}
+  {% include '_overview_card.html' with title="Balance" value=balance %}
+</div>
+
+{% include '_month_navigation.html' %}
+
+<div class="row">
+  {% include '_transactions_table.html' %}
 </div>
 
 {% endblock %}

@@ -11,7 +11,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for transaction in value %}
+                {% for transaction in transactions %}
                     <tr>
                         <td>{{ transaction.name }}</td>
                         <td>{{ transaction.amount | currency }}</td>
