@@ -1,15 +1,40 @@
 {% extends "base.html" %}
+{% load moneyfilter %}
 
-{% block sidebar %}
-    <a href="{% url 'finances:expense_create' %}">Novo</a>
-{% endblock %}
 
 {% block content %}
-<h1>Despesas</h1>
-<ul>
-    {% for expense in expenses %}
-        <li><a href="{% url 'finances:expense_edit' expense.id %}">{{ expense }}</a></li>
-    {% endfor %}
-</ul>
+    <h1>Expense</h1>
+   
 
+    <form method="GET">
+        <input type="text" name="search-field" value="{{search_input}}"/>
+        <input type="submit" value="search"  class="btn btn-secondary"/>
+    </form>
+    <a href="{% url 'finances:expense_create' %}" class="btn btn-primary">New</a>
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Payment Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.name }}</td>
+                        <td>{{ expense.amount | currency }}</td>
+                        <td>{{ expense.due_date }}</td>
+                        <td>{{ expense.payment_date }}</td>
+                        <td>
+                            <a href="{% url 'finances:expense_edit' expense.id %}">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

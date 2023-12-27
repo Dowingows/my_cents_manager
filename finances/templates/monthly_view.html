@@ -1,27 +1,29 @@
-{% load moneyfilter  %}
+{% extends "base.html" %}
 
-<a href="{% url 'finances:expense_create' %}">New Expense</a>
-<a href="{% url 'finances:income_create' %}">New Income</a>
+{% load moneyfilter %}
 
-<h2>Monthly Financial Overview - {{ month }}/{{ year }}</h2>
+{% block content %}
 
-<div>
-    <a href="{{ prev_link }}">Previous Month</a>
-    <a href="{{ next_link }}">Next Month</a>
+<div class="row">
+    <div class="col-9">
+        <h2>Monthly Financial Overview</h2>
+    </div>
+    <div class="col">
+      <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
+      <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
+    </div>
 </div>
 
-<div>
-    <p>Total Income: {{ total_income|currency}}</p>
-    <p>Total Expense:  {{ total_expense|currency }}</p>
-    <p>Balance:  {{ balance|currency }}</p>
+<div class="row">
+  {% include '_overview_card.html' with title="Total Income" value=total_income %}
+  {% include '_overview_card.html' with title="Total Expense" value=total_expense %}
+  {% include '_overview_card.html' with title="Balance" value=balance %}
 </div>
 
-<ul>
-    {% for transaction in transactions %}
-        <li>
-            {{ transaction.name }}:
-            {{ transaction.amount | currency }} 
-            ({{ transaction.transaction_type }})
-        </li>
-    {% endfor %}
-</ul>
+{% include '_month_navigation.html' %}
+
+<div class="row">
+  {% include '_transactions_table.html' %}
+</div>
+
+{% endblock %}

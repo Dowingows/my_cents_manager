@@ -11,6 +11,7 @@ from finances.models import Transaction
 from .forms import ExpenseForm, IncomeForm
 from .mixins import (
     ExpenseTransactionMixin,
+    FilterMixin,
     IncomeTransactionMixin,
     UserFilteredMixin,
 )
@@ -21,10 +22,13 @@ def index(request):
     return render(request, 'index.html')
 
 
-class IndexView(UserFilteredMixin, generic.ListView):
+class IndexView(FilterMixin, UserFilteredMixin, generic.ListView):
     model = Expense
     template_name = 'expense/index.html'
     context_object_name = 'expenses'
+
+    def filter_by_search(self, queryset, search_input):
+        return queryset.filter(name__contains=search_input)
 
 
 class DetailView(UserFilteredMixin, generic.DetailView):
@@ -36,7 +40,7 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
     model = Expense
     form_class = ExpenseForm
-    template_name = 'expense/form.html'
+    template_name = 'expense/new.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
@@ -53,7 +57,7 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
 class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
     model = Expense
     form_class = ExpenseForm
-    template_name = 'expense/form.html'
+    template_name = 'expense/update.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
@@ -69,17 +73,20 @@ class ExpenseDeleteView(generic.DeleteView):
     success_url = reverse_lazy('finances:expense_index')
 
 
-class IncomeIndexView(UserFilteredMixin, generic.ListView):
+class IncomeIndexView(FilterMixin, UserFilteredMixin, generic.ListView):
     model = Income
     template_name = 'income/index.html'
     context_object_name = 'incomes'
+
+    def filter_by_search(self, queryset, search_input):
+        return queryset.filter(name__contains=search_input)
 
 
 @method_decorator(login_required, name='dispatch')
 class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
     model = Income
     form_class = IncomeForm
-    template_name = 'income/form.html'
+    template_name = 'income/new.html'
     success_url = reverse_lazy('finances:income_index')
 
     def form_valid(self, form):
@@ -96,7 +103,7 @@ class IncomeCreateView(IncomeTransactionMixin, generic.CreateView):
 class IncomeUpdateView(IncomeTransactionMixin, generic.UpdateView):
     model = Income
     form_class = IncomeForm
-    template_name = 'income/form.html'
+    template_name = 'income/update.html'
     success_url = reverse_lazy('finances:income_index')
 
     def form_valid(self, form):
@@ -155,7 +162,7 @@ class MonthlyView(View):
             user=user,
             transaction_date__month=month,
             transaction_date__year=year,
-        )
+        ).order_by('-transaction_date')
 
     def calculate_totals(self, transactions):
         total_income = (

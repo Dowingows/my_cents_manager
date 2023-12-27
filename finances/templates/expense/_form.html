@@ -1,0 +1,7 @@
+{% load bootstrapfilter %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form |bootstrap }}
+    <input type="submit" value="Submit" class="mt-4 btn btn-primary">
+</form>

@@ -1,10 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'login.html' %}
+{% load bootstrapfilter %}
 
 {% block content %}
   <h2>Entrar</h2>
   <form method="post" action="{% url 'authentication:signin' %}">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
+    {{ form |bootstrap }}
+    <button type="submit" class="mt-4 btn btn-primary ">Login</button>
+    <a href="/"  class="btn btn-secondary mt-4"> Voltar</a>
   </form>
 {% endblock %}

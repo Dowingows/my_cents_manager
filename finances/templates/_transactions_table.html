@@ -1,0 +1,42 @@
+{% load moneyfilter %}
+<div class="col">
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.name }}</td>
+                        <td>{{ transaction.amount | currency }}</td>
+                        <td>
+                            {% if transaction.transaction_type == 'expense' %}
+                            <span class="badge bg-danger">Expense</span>
+                            {% elif transaction.transaction_type == 'income' %}
+                            <span class="badge bg-primary">Income</span>
+                            {% endif %}
+                        </td>
+                        <td>{{  transaction.transaction_date }}</td>
+                        <td>
+                            {% if transaction.expense.id %}
+                            <a href="{% url 'finances:expense_edit' transaction.expense.id %}">
+                                edit
+                            </a>
+                            {% elif transaction.income.id %}
+                                <a href="{% url 'finances:income_edit' transaction.income.id %}">edit</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+</div>
