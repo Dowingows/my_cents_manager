@@ -6,6 +6,10 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application  # Start Gunicorn
     expose:
       - "8000"  # Expose port 8000 for communication with Nginx
+    
+    environment:
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
 
   nginx:
     image: nginx:1.25-alpine  # Use a stable Nginx image
