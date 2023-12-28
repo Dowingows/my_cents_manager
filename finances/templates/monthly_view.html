@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-9">
+    <div class="col-9 col-xs-12">
       <ul class="nav nav-tabs">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Transactions</a>
@@ -18,7 +18,7 @@
         </li>
       </ul>
     </div>
-    <div class="col">
+    <div class="col col-xs-12 ">
       <a href="{% url 'finances:income_create' %}" class="btn btn-success">New Income</a>
       <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
     </div>
