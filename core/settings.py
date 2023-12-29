@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default='django-insecure-9q^ei=p38v$qd
 #DEBUG = bool(os.environ.get("DEBUG", default=0))
 DEBUG=True
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1 [::1]").split(" ")
-ALLOWED_HOSTS=['*', 'finances.moonapp.com.br']
+ALLOWED_HOSTS=['finances.moonapp.com.br']
 # Application definition
 
 INSTALLED_APPS = [
