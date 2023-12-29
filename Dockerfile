@@ -24,6 +24,6 @@ EXPOSE 8000
 COPY ./entrypoint.sh .
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
-# ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
