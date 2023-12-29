@@ -8,7 +8,7 @@ services:
         limits:
           memory: 100M
           
-    command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application  # Start Gunicorn
+    command:  ["./entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]  # Start Gunicorn
     expose:
       - "8000"  # Expose port 8000 for communication with Nginx
     
