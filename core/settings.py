@@ -25,11 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", default='django-insecure-9q^ei=p38v$qds4fc2i$v5l6b5s8z5fn)0z8b08^g0_e2u^al8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = bool(os.environ.get("DEBUG", default=0))
-DEBUG=True
-#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1 [::1]").split(" ")
-ALLOWED_HOSTS=['finances.moonapp.com.br']
-# Application definition
+DEBUG = bool(os.environ.get("DEBUG", default=0))
+
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1 [::1]").split(" ")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
