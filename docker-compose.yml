@@ -14,7 +14,7 @@ services:
     
     environment:
       - DEBUG=${DEBUG}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
 
   nginx:
     image: nginx:1.25-alpine  # Use a stable Nginx image
