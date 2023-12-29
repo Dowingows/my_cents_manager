@@ -3,6 +3,11 @@ version: "3.9"
 services:
   app:
     build: .  # Build the Django application using the provided Dockerfile
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+          
     command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application  # Start Gunicorn
     expose:
       - "8000"  # Expose port 8000 for communication with Nginx
@@ -13,6 +18,10 @@ services:
 
   nginx:
     image: nginx:1.25-alpine  # Use a stable Nginx image
+    deploy:
+      resources:
+        limits:
+          memory: 100M
     ports:
       - "80:80"  # Redirect HTTP traffic to HTTPS
       #- "443:443"  # Listen for HTTPS traffic
