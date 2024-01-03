@@ -28,7 +28,8 @@ services:
       - EMAIL=${EMAIL}
 
     ports:
-      - "443:443"  # Listen for HTTPS traffic
+      - "80:80"
+      - "443:443"
 
     volumes:
       - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
