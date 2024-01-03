@@ -16,25 +16,21 @@ services:
       - DEBUG=${DEBUG}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
 
-  nginx:
-    image: nginx:1.25-alpine  # Use a stable Nginx image
+  caddy:
+    image: caddy:2.7.6-alpine  # Use a stable Nginx image
     deploy:
       resources:
         limits:
           memory: 100M
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+
     ports:
-      - "80:80"  # Redirect HTTP traffic to HTTPS
-      #- "443:443"  # Listen for HTTPS traffic
+      - "443:443"  # Listen for HTTPS traffic
+
     volumes:
-      - ./infrastructure/nginx/conf.d:/etc/nginx/conf.d:ro  # Mount Nginx configuration files
-      - ./infrastructure/certbot/conf:/etc/letsencrypt  # Mount Let's Encrypt configuration files
-      - ./infrastructure/certbot/www:/var/www/certbot  # Mount Let's Encrypt challenge files
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+
     depends_on:
       - app  # Ensure app container starts before Nginx
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     - ./infrastructure/certbot/conf:/etc/letsencrypt
-  #     - ./infrastructure/certbot/www:/var/www/certbot
-  #   command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN}
