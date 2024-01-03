@@ -1,4 +1,4 @@
-finances.moonapp.com.br {
+{$DOMAIN} {
 	reverse_proxy app:8000
-	tls domingos.adj@gmail.com
+	tls {$EMAIL}
 }
