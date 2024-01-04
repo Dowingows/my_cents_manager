@@ -1,0 +1,10 @@
+{$DOMAIN} {
+	reverse_proxy app:8000
+	tls {$EMAIL}
+}
+
+http://{$DOMAIN} {
+    redir https://{$DOMAIN} {
+        permanent
+    }
+}
