@@ -12,13 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: astappiev/docker-compose-remote-action@master
-      name: Docker-Compose Remote Deployment
-      with:
-        ssh_host: ${{ secrets.DEPLOY_HOST }}
-        ssh_user: ${{ secrets.DEPLOY_USERNAME }}
-        ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        ssh_host_public_key: ${{ secrets.DEPLOY_PUBLIC_KEY }}
-        ssh_jump_host: null
-        ssh_jump_public_key: null
-        docker_compose_prefix: my_cents_manager
+    - name: Deploy
+        run: |
+          ssh -i ${{ secrets.DEPLOY_PRIVATE_KEY }} ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "rm -rf /home/finances/my_cents_manager/*"
