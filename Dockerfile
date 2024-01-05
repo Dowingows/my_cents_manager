@@ -1,6 +1,13 @@
 FROM python:3.12.1-alpine
 
-RUN apk add --no-cache python3 py3-gunicorn
+RUN apk add --no-cache \
+    python3 \
+    py3-gunicorn \
+    mariadb-connector-c-dev \
+    build-base \
+    linux-headers \
+    mysql-dev \
+    && pip install --upgrade pip
 
 # set work directory
 WORKDIR /usr/src/app
