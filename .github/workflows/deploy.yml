@@ -30,7 +30,7 @@ jobs:
             whoami
             ls -al
             echo $RSYNC_STDOUT
-
+            
   start-app:
     needs: deploy
     runs-on: ubuntu-latest
@@ -48,4 +48,4 @@ jobs:
 
       - name: Start Application
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'echo $DOMAIN'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/app && docker compose up -d'
