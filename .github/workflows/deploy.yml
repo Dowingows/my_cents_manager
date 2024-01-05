@@ -27,5 +27,6 @@ jobs:
             whoami
             ls -al
           SCRIPT_AFTER: |
-            compose up --build -d
+            cd /home/finances/app
+            docker compose up --build -d
             echo $RSYNC_STDOUT
