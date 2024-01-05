@@ -20,4 +20,5 @@ jobs:
         ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         ssh_host_public_key: ${{ secrets.DEPLOY_PUBLIC_KEY }}
         ssh_jump_host: null
+        ssh_jump_public_key: null
         docker_compose_prefix: my_cents_manager
