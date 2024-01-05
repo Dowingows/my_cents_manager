@@ -48,4 +48,4 @@ jobs:
 
       - name: Start Application
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'source /etc/profile; cd /home/finances/app && docker compose up -d'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'source ~/.bashrc; cd /home/finances/app && docker compose up -d'
