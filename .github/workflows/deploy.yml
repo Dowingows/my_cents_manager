@@ -27,5 +27,10 @@ jobs:
             whoami
             ls -al
           SCRIPT_AFTER: |
-            docker compose up --build -d 
-            
+            whoami
+            ls -al
+            echo $RSYNC_STDOUT
+
+      - name: Run Docker Compose on Remote Server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.DEPLOY_PRIVATE_KEY }} ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/app && docker compose up --build -d'
