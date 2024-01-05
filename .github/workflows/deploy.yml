@@ -23,4 +23,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/my_cents_manager && docker-compose up -d'
+          ssh -i ~/.ssh/id_rsa -vvv ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/my_cents_manager && docker-compose up -d'
