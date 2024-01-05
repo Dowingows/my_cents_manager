@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup SSH
         run: |
@@ -20,11 +20,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           echo "${{ secrets.DEPLOY_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
 
-          # Adiciona a chave pública ao arquivo authorized_keys no servidor
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "echo '${{ secrets.DEPLOY_PUBLIC_KEY }}' >> ~/.ssh/authorized_keys"
+          # Use ssh-copy-id para adicionar a chave pública ao servidor
+          ssh-copy-id -i ~/.ssh/id_rsa.pub ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}
 
           ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/my_cents_manager && docker compose up -d'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /caminho/para/sua/aplicacao && docker-compose up -d'
