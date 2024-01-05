@@ -27,6 +27,25 @@ jobs:
             whoami
             ls -al
           SCRIPT_AFTER: |
-            cd /home/finances/app
-            docker compose up --build -d
+            whoami
+            ls -al
             echo $RSYNC_STDOUT
+            
+  start-app:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Start Application
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/app && docker compose up -d'
