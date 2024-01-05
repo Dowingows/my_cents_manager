@@ -1,29 +1,30 @@
-version: "3.9"
+  version: "3.9"
 
-services:
-  app:
-    build: .  # Build the Django application using the provided Dockerfile          
-    command:  ["./entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]  # Start Gunicorn
-    expose:
-      - "8000"  # Expose port 8000 for communication with Nginx
-    
-    environment:
-      - DEBUG=${DEBUG}
-      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
-      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
+  services:
+    app:
+      build: .  # Build the Django application using the provided Dockerfile          
+      command:  ["./entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]  # Start Gunicorn
+      expose:
+        - "8000"  # Expose port 8000 for communication with Nginx
+      
+      environment:
+        - DEBUG=${DEBUG}
+        - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+        - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
 
-  caddy:
-    image: caddy:2.7.6-alpine  # Use a stable Nginx image
-    environment:
-      - DOMAIN=${DOMAIN}
-      - EMAIL=${EMAIL}
+      network_mode: "host"
+    caddy:
+      image: caddy:2.7.6-alpine  # Use a stable Nginx image
+      environment:
+        - DOMAIN=${DOMAIN}
+        - EMAIL=${EMAIL}
 
-    ports:
-      - "80:80"
-      - "443:443"
+      ports:
+        - "80:80"
+        - "443:443"
 
-    volumes:
-      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+      volumes:
+        - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
 
-    depends_on:
-      - app  # Ensure app container starts before Nginx
+      depends_on:
+        - app  # Ensure app container starts before Nginx
