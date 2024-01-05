@@ -17,7 +17,6 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i"
-          SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_USERNAME }}
           TARGET: /home/finances/app
