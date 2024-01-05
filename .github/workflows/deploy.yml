@@ -11,18 +11,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Checkout Repository
+    - uses: actions/checkout@v3
+    - name: Checkout Repository
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} '/home/finances/my_cents_manager && docker-compose up -d'
+    - name: Deploy
+      run: |
+        ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} '/home/finances/my_cents_manager && docker-compose up -d'
     
     
