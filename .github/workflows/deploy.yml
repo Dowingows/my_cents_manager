@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'checkout code'
+        uses: actions/checkout@v3
+      
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         with:
