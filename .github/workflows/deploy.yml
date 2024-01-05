@@ -23,7 +23,7 @@ jobs:
           echo "${{ secrets.DEPLOY_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
 
           # Adiciona a chave pública ao arquivo authorized_keys no servidor
-          ssh -i ~/.ssh/id_rsa ${{ secraaets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "echo '${{ secrets.DEPLOY_PUBLIC_KEY }}' >> ~/.ssh/authorized_keys"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "echo '${{ secrets.DEPLOY_PUBLIC_KEY }}' >> ~/.ssh/authorized_keys"
 
           ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
