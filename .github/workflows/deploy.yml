@@ -21,10 +21,10 @@ jobs:
           echo "${{ secrets.DEPLOY_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
 
           # Adiciona a chave pública ao arquivo authorized_keys no servidor
-          ssh -i ~/.ssh/id_rsa seu_usuario@seu_servidor "echo '${{ secrets.DEPLOY_PUBLIC_KEY }}' >> ~/.ssh/authorized_keys"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} "echo '${{ secrets.DEPLOY_PUBLIC_KEY }}' >> ~/.ssh/authorized_keys"
 
-          ssh-keyscan -t rsa seu_servidor >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_rsa seu_usuario@seu_servidor 'cd /caminho/para/sua/aplicacao && docker-compose up -d'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'cd /home/finances/my_cents_manager && docker compose up -d'
