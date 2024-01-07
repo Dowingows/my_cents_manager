@@ -17,8 +17,6 @@
         - DB_HOST=${DB_HOST}
         - DB_PORT=${DB_PORT}
 
-      network_mode: "host"
-
     caddy:
       image: caddy:2.7.6-alpine  # Use a stable Nginx image
       environment:
