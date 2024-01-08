@@ -225,7 +225,7 @@ class ExpenseMonthlyView(MonthlyMixin):
             'prev_link': prev_link,
         }
 
-        return render(request, self.template_name, context)
+        return render(request1, self.template_name, context)
 
     def get_expenses(self, user, month, year):
         return Expense.objects.filter(
