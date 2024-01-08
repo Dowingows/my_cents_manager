@@ -42,6 +42,9 @@ class Expense(models.Model):
             and self.due_date <= timezone.now().date()
         )
 
+    def is_paid(self):
+        return self.payment_date is not None
+
     def delete(self, *args, **kwargs):
         if self.transaction:
             self.transaction.delete()

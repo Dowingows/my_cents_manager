@@ -1,0 +1,40 @@
+{% load moneyfilter %}
+<div class="col">
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.name }}</td>
+                        <td>{{ expense.amount | currency }}</td>
+                        <td>
+                            {% if expense.is_delayed %}
+                                <span class="badge bg-danger">Delayed</span>
+                            {% elif expense.is_paid %}
+                                <span class="badge bg-success">Paid</span>
+                            {% else %}
+                                <span class="badge bg-warning">Due</span>
+                            {% endif %}
+                        </td>
+                        <td>{{  expense.due_date }}</td>
+                        <td>
+                            <a href="{% url 'finances:expense_edit' expense.id %}">
+                                edit
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+</div>

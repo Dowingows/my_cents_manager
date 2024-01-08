@@ -11,6 +11,11 @@ urlpatterns = [
         'expense/new', views.ExpenseCreateView.as_view(), name='expense_create'
     ),
     path(
+        'expense/monthly',
+        views.ExpenseMonthlyView.as_view(),
+        name='expense_monthly',
+    ),
+    path(
         'expense/<int:pk>/', views.DetailView.as_view(), name='expense_detail'
     ),
     path(

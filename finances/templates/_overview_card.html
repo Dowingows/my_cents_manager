@@ -1,6 +1,6 @@
 <!-- _overview_card.html -->
 {% load moneyfilter %}
-<div class="col-md-4 mt-4">
+<div class="{% if className %}{{className}}{% else %}col-md-4 mt-4{% endif %}">
     <div class="card bg-white">
         <div class="card-body">
             <h5 class="card-title">{{ title }}</h5>

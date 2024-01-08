@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 
 from .models import Transaction
 
@@ -100,3 +102,26 @@ class FilterMixin:
         raise NotImplementedError(
             'Subclasses of FilterMixin must provide a filter_by_search method.'
         )
+
+
+class MonthlyMixin(View):
+    template_name = None
+
+    def get_month_and_year(self, request):
+        month = int(request.GET.get('month', timezone.now().month))
+        year = int(request.GET.get('year', timezone.now().year))
+        return month, year
+
+    def calculate_next_and_previous(self, month, year):
+        next_month = (month % 12) + 1
+        next_year = year + 1 if next_month == 1 else year
+        prev_month = month - 1 if month > 1 else 12
+        prev_year = year - 1 if month == 1 else year
+        return next_month, next_year, prev_month, prev_year
+
+    def calculate_links(
+        self, url, next_month, next_year, prev_month, prev_year
+    ):
+        next_link = url + f'?month={next_month}&year={next_year}'
+        prev_link = url + f'?month={prev_month}&year={prev_year}'
+        return next_link, prev_link
