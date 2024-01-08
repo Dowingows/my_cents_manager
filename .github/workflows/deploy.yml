@@ -45,4 +45,4 @@ jobs:
 
       - name: Start Application
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'source ~/.env; cd /home/finances/app && docker compose up -d --build'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} 'source ~/.env; cd /home/finances/app && ./start-app.sh'
