@@ -8,10 +8,10 @@
     <div class="col-9 col-xs-12">
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'finances:home' %}">Transactions</a>
+          <a class="nav-link" href="{% url 'finances:home' %}">Transactions</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'finances:expense_monthly' %}">Due</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'finances:expense_monthly' %}">Due</a>
         </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#">Receivables</a>
@@ -23,22 +23,20 @@
       <a href="{% url 'finances:expense_create' %}" class="btn btn-danger">New Expense</a>
     </div>
 </div>
+
 <div class="row">
   <div class="col mt-4">
-  <h2>Monthly Financial Overview</h2>
+  <h2>Monthly Payables Summary</h2>
   </div>
 </div>
 
 <div class="row">
-  {% include '_overview_card.html' with title="Total Income" value=total_income %}
-  {% include '_overview_card.html' with title="Total Expense" value=total_expense %}
-  {% include '_overview_card.html' with title="Balance" value=balance %}
+  {% include '_overview_card.html' with title="Total" value=total_expense %}
 </div>
-
-{% include '_month_navigation.html' %}
 
 <div class="row">
-  {% include '_transactions_table.html' %}
+  {% include 'expense/__table_due.html' %}
 </div>
+
 
 {% endblock %}

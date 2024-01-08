@@ -195,3 +195,35 @@ class MonthlyView(View):
             reverse('finances:home') + f'?month={prev_month}&year={prev_year}'
         )
         return next_link, prev_link
+
+
+@method_decorator(login_required, name='dispatch')
+class ExpenseMonthlyView(View):
+    template_name = 'expense/monthly.html'
+
+    def get(self, request, *args, **kwargs):
+
+        month, year = self.get_month_and_year(request)
+        expenses = self.get_expenses_unpaid(request.user, month, year)
+        total_expense = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+
+        context = {
+            'expenses': expenses,
+            'total_expense': total_expense,
+            'month': month,
+            'year': year,
+        }
+
+        return render(request, self.template_name, context)
+
+    def get_expenses_unpaid(self, user, month, year):
+        return Expense.objects.filter(
+            user=user,
+            due_date__month=month,
+            due_date__year=year,
+        ).order_by('-due_date')
+
+    def get_month_and_year(self, request):
+        month = int(request.GET.get('month', timezone.now().month))
+        year = int(request.GET.get('year', timezone.now().year))
+        return month, year
