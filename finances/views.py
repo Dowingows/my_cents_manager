@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.views import View, generic
+from django.views import generic
 
 from finances.models import Transaction
 
@@ -121,7 +121,7 @@ class IncomeDeleteView(generic.DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class MonthlyView(View):
+class MonthlyView(MonthlyMixin):
     template_name = 'monthly_view.html'
 
     def get(self, request, *args, **kwargs):
@@ -138,7 +138,11 @@ class MonthlyView(View):
             prev_year,
         ) = self.calculate_next_and_previous(month, year)
         next_link, prev_link = self.calculate_links(
-            next_month, next_year, prev_month, prev_year
+            reverse('finances:home'),
+            next_month,
+            next_year,
+            prev_month,
+            prev_year,
         )
 
         context = {
@@ -153,11 +157,6 @@ class MonthlyView(View):
         }
 
         return render(request, self.template_name, context)
-
-    def get_month_and_year(self, request):
-        month = int(request.GET.get('month', timezone.now().month))
-        year = int(request.GET.get('year', timezone.now().year))
-        return month, year
 
     def get_transactions(self, user, month, year):
         return Transaction.objects.filter(
@@ -182,22 +181,6 @@ class MonthlyView(View):
         balance = total_income + total_expense
         return total_income, total_expense, balance
 
-    def calculate_next_and_previous(self, month, year):
-        next_month = (month % 12) + 1
-        next_year = year + 1 if next_month == 1 else year
-        prev_month = month - 1 if month > 1 else 12
-        prev_year = year - 1 if month == 1 else year
-        return next_month, next_year, prev_month, prev_year
-
-    def calculate_links(self, next_month, next_year, prev_month, prev_year):
-        next_link = (
-            reverse('finances:home') + f'?month={next_month}&year={next_year}'
-        )
-        prev_link = (
-            reverse('finances:home') + f'?month={prev_month}&year={prev_year}'
-        )
-        return next_link, prev_link
-
 
 @method_decorator(login_required, name='dispatch')
 class ExpenseMonthlyView(MonthlyMixin):
@@ -206,21 +189,14 @@ class ExpenseMonthlyView(MonthlyMixin):
     def get(self, request, *args, **kwargs):
 
         month, year = self.get_month_and_year(request)
-        expenses = self.get_expenses_unpaid(request.user, month, year)
-        total_expense = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
-        total_delayed = (
-            expenses.filter(
-                payment_date__isnull=True, due_date__lte=timezone.now().date()
-            )
-        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        expenses = self.get_expenses(request.user, month, year)
 
-        total_unpaid = (expenses.filter(payment_date__isnull=True)).aggregate(
-            Sum('amount')
-        )['amount__sum'] or 0
-
-        total_paid = (expenses.filter(payment_date__isnull=False)).aggregate(
-            Sum('amount')
-        )['amount__sum'] or 0
+        (
+            total_expense,
+            total_delayed,
+            total_unpaid,
+            total_paid,
+        ) = self.calculate_totals(expenses)
 
         (
             next_month,
@@ -251,9 +227,28 @@ class ExpenseMonthlyView(MonthlyMixin):
 
         return render(request, self.template_name, context)
 
-    def get_expenses_unpaid(self, user, month, year):
+    def get_expenses(self, user, month, year):
         return Expense.objects.filter(
             user=user,
             due_date__month=month,
             due_date__year=year,
         ).order_by('-due_date')
+
+    def calculate_totals(self, expenses):
+
+        total_expense = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_delayed = (
+            expenses.filter(
+                payment_date__isnull=True, due_date__lte=timezone.now().date()
+            )
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        total_unpaid = (expenses.filter(payment_date__isnull=True)).aggregate(
+            Sum('amount')
+        )['amount__sum'] or 0
+
+        total_paid = (expenses.filter(payment_date__isnull=False)).aggregate(
+            Sum('amount')
+        )['amount__sum'] or 0
+
+        return total_expense, total_delayed, total_unpaid, total_paid

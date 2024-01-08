@@ -466,3 +466,27 @@ class IncomeDeleteViewTest(AuthenticationTestMixin, TestCase):
         self.assertFalse(
             Transaction.objects.filter(pk=self.transaction.pk).exists()
         )
+
+
+class MonthlyViewTest(AuthenticationTestMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse('finances:home')
+
+    def test_view_render_succesfully(self):
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+
+class ExpenseMonthlyViewTest(AuthenticationTestMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse('finances:expense_monthly')
+
+    def test_view_render_succesfully(self):
+        self.authenticate_user()
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
