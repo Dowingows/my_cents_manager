@@ -13,6 +13,7 @@ from .mixins import (
     ExpenseTransactionMixin,
     FilterMixin,
     IncomeTransactionMixin,
+    MonthlyMixin,
     UserFilteredMixin,
 )
 from .models import Expense, Income
@@ -129,6 +130,7 @@ class MonthlyView(View):
         total_income, total_expense, balance = self.calculate_totals(
             transactions
         )
+
         (
             next_month,
             next_year,
@@ -198,7 +200,7 @@ class MonthlyView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseMonthlyView(View):
+class ExpenseMonthlyView(MonthlyMixin):
     template_name = 'expense/monthly.html'
 
     def get(self, request, *args, **kwargs):
@@ -206,12 +208,45 @@ class ExpenseMonthlyView(View):
         month, year = self.get_month_and_year(request)
         expenses = self.get_expenses_unpaid(request.user, month, year)
         total_expense = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_delayed = (
+            expenses.filter(
+                payment_date__isnull=True, due_date__lte=timezone.now().date()
+            )
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        total_unpaid = (expenses.filter(payment_date__isnull=True)).aggregate(
+            Sum('amount')
+        )['amount__sum'] or 0
+
+        total_paid = (expenses.filter(payment_date__isnull=False)).aggregate(
+            Sum('amount')
+        )['amount__sum'] or 0
+
+        (
+            next_month,
+            next_year,
+            prev_month,
+            prev_year,
+        ) = self.calculate_next_and_previous(month, year)
+
+        next_link, prev_link = self.calculate_links(
+            reverse('finances:expense_monthly'),
+            next_month,
+            next_year,
+            prev_month,
+            prev_year,
+        )
 
         context = {
             'expenses': expenses,
             'total_expense': total_expense,
+            'total_delayed': total_delayed,
+            'total_unpaid': total_unpaid,
+            'total_paid': total_paid,
             'month': month,
             'year': year,
+            'next_link': next_link,
+            'prev_link': prev_link,
         }
 
         return render(request, self.template_name, context)
@@ -222,8 +257,3 @@ class ExpenseMonthlyView(View):
             due_date__month=month,
             due_date__year=year,
         ).order_by('-due_date')
-
-    def get_month_and_year(self, request):
-        month = int(request.GET.get('month', timezone.now().month))
-        year = int(request.GET.get('year', timezone.now().year))
-        return month, year

@@ -31,8 +31,13 @@
 </div>
 
 <div class="row">
-  {% include '_overview_card.html' with title="Total" value=total_expense %}
+  {% include '_overview_card.html' with title="Total" value=total_expense className="col-md-3 mt-4" %}
+  {% include '_overview_card.html' with title="Paid" value=total_paid className="col-md-3 mt-4"%}
+  {% include '_overview_card.html' with title="Unpaid" value=total_unpaid className="col-md-3 mt-4"%}
+  {% include '_overview_card.html' with title="Delayed" value=total_delayed className="col-md-3 mt-4"%}
 </div>
+
+{% include '_month_navigation.html' %}
 
 <div class="row">
   {% include 'expense/__table_due.html' %}
