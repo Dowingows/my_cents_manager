@@ -32,7 +32,7 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     invoice_file = models.FileField(
-        upload_to='expense_invoices/',  # Optional: Specify a path within S3 bucket
+        upload_to='expense_invoices/',
         storage=S3Boto3Storage(
             bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
         ),
