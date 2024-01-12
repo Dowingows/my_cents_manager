@@ -1,6 +1,6 @@
 {% load bootstrapfilter %}
 
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data" >
     {% csrf_token %}
     {{ form |bootstrap }}
     <input type="submit" value="Submit" class="mt-4 btn btn-primary">

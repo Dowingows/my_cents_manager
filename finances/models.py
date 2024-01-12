@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class Transaction(models.Model):
@@ -28,6 +30,14 @@ class Expense(models.Model):
     due_date = models.DateField()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    invoice_file = models.FileField(
+        upload_to='expense_invoices/',  # Optional: Specify a path within S3 bucket
+        storage=S3Boto3Storage(
+            bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
+        ),
+    )
+
     transaction = models.OneToOneField(
         Transaction,
         on_delete=models.SET_NULL,

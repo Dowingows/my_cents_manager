@@ -12,9 +12,11 @@ class ExpenseForm(forms.ModelForm):
     )
     due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
 
+    invoice_file = forms.FileField()
+
     class Meta:
         model = Expense
-        fields = ['name', 'amount', 'due_date', 'payment_date']
+        fields = ['name', 'amount', 'due_date', 'payment_date', 'invoice_file']
 
 
 class IncomeForm(forms.ModelForm):
