@@ -1,3 +1,7 @@
+import os
+import re
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import render
@@ -46,6 +50,17 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        invoice_file = form.cleaned_data['invoice_file']
+        # @todo: criar um mixin para este comportamento de sanitaze do arquivo
+        if invoice_file:
+            file_name, ext = os.path.splitext(invoice_file.name)
+
+            file_name = re.sub(r'[^\w\-.]+', '-', file_name)
+            file_name = file_name.replace(' ', '-')
+
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            form.instance.invoice_file.name = f'{file_name}-{timestamp}{ext}'
 
         response = super().form_valid(form)
 

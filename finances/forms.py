@@ -12,7 +12,7 @@ class ExpenseForm(forms.ModelForm):
     )
     due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
 
-    invoice_file = forms.FileField()
+    invoice_file = forms.FileField(required=False)
 
     class Meta:
         model = Expense
