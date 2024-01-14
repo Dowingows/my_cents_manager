@@ -12,6 +12,7 @@ django = "^5.0"
 ruff = "^0.1.8"
 gunicorn = "^21.2.0"
 mysqlclient = "^2.2.1"
+django-storages = "^1.14.2"
 
 
 [tool.poetry.group.dev.dependencies]
