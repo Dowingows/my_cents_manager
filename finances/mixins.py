@@ -1,4 +1,7 @@
+import os
+import re
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -125,3 +128,21 @@ class MonthlyMixin(View):
         next_link = url + f'?month={next_month}&year={next_year}'
         prev_link = url + f'?month={prev_month}&year={prev_year}'
         return next_link, prev_link
+
+
+class FileSanitizationMixin:
+    def sanitize_file_name(self, form, field_name):
+        uploaded_file = form.cleaned_data[field_name]
+
+        if uploaded_file:
+            file_name, ext = os.path.splitext(uploaded_file.name)
+
+            file_name = re.sub(r'[^\w\-.]+', '-', file_name)
+            file_name = file_name.replace(' ', '-')
+
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            setattr(
+                form.instance,
+                f'{field_name}_name',
+                f'{file_name}-{timestamp}{ext}',
+            )

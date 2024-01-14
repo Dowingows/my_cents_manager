@@ -15,6 +15,7 @@ from finances.models import Transaction
 from .forms import ExpenseForm, IncomeForm
 from .mixins import (
     ExpenseTransactionMixin,
+    FileSanitizationMixin,
     FilterMixin,
     IncomeTransactionMixin,
     MonthlyMixin,
@@ -42,7 +43,9 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
+class ExpenseCreateView(
+    ExpenseTransactionMixin, FileSanitizationMixin, generic.CreateView
+):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/new.html'
@@ -51,16 +54,7 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
 
-        invoice_file = form.cleaned_data['invoice_file']
-        # @todo: criar um mixin para este comportamento de sanitaze do arquivo
-        if invoice_file:
-            file_name, ext = os.path.splitext(invoice_file.name)
-
-            file_name = re.sub(r'[^\w\-.]+', '-', file_name)
-            file_name = file_name.replace(' ', '-')
-
-            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-            form.instance.invoice_file.name = f'{file_name}-{timestamp}{ext}'
+        self.sanitize_file_name(form, 'invoice_file')
 
         response = super().form_valid(form)
 
