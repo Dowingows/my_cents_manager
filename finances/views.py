@@ -60,13 +60,16 @@ class ExpenseCreateView(
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
+class ExpenseUpdateView(
+    ExpenseTransactionMixin, FileSanitizationMixin, generic.UpdateView
+):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/update.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
+        self.sanitize_file_name(form, 'invoice_file')
         response = super().form_valid(form)
         self.process_transaction(form, 'expense')
         return response
