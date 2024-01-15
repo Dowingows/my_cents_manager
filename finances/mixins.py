@@ -149,13 +149,22 @@ class FileSanitizationMixin:
 
 
 class FileGenerationMixin:
-    def modify_file_name(self, form, field_name):
+    def modify_file_name(self, form, field_name, prefix=None):
         uploaded_file = form.cleaned_data[field_name]
 
         if uploaded_file:
-            _, ext = os.path.splitext(uploaded_file.name)
-            class_name = form.instance.__class__.__name__.lower()
-            file_name = f'{class_name}_{form.instance.id}{ext}'
+
+            file_name, ext = os.path.splitext(uploaded_file.name)
+
+            file_name = re.sub(r'[^\w\-.]+', '-', file_name)
+            file_name = file_name.replace(' ', '-')
+
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+
+            if prefix is None:
+                prefix = form.instance.__class__.__name__.lower()
+
+            file_name = f'{prefix}_{file_name}_{timestamp}{ext}'
 
             field = getattr(form.instance, f'{field_name}')
             setattr(field, 'name', file_name)

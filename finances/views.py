@@ -49,10 +49,10 @@ class ExpenseCreateView(
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        self.modify_file_name(form, 'invoice_file', 'invoice')
 
         response = super().form_valid(form)
 
-        self.modify_file_name(form, 'invoice_file')
         self.process_transaction(form, 'expense')
 
         return response
@@ -69,7 +69,7 @@ class ExpenseUpdateView(
 
     def form_valid(self, form):
 
-        self.modify_file_name(form, 'invoice_file')
+        self.modify_file_name(form, 'invoice_file', 'invoice')
 
         response = super().form_valid(form)
 

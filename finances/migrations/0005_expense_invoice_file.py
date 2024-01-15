@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expense',
             name='invoice_file',
-            field=models.FileField(default=None, null=True, storage=storages.backends.s3.S3Storage(), upload_to='expense_invoices/'),
+            field=models.FileField(default=None, null=True, storage=storages.backends.s3.S3Storage(), upload_to='expense_documents/'),
             preserve_default=False,
         ),
     ]

@@ -5,6 +5,21 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
+class FileRemovalMixin:
+    def remove_previous_file(self, instance, field_name):
+        if instance.id and getattr(instance, field_name):
+            try:
+                old_instance = instance.__class__.objects.get(id=instance.id)
+                old_file = getattr(old_instance, field_name)
+                new_file = getattr(instance, field_name)
+
+                if old_file.name != new_file.name:
+                    old_file.delete(save=False)
+
+            except instance.__class__.DoesNotExist:
+                pass
+
+
 class Transaction(models.Model):
     TRANSACTION_TYPES = (
         ('income', 'Income'),
@@ -23,7 +38,7 @@ class Transaction(models.Model):
         return f'{self.name} ({self.amount})'
 
 
-class Expense(models.Model):
+class Expense(models.Model, FileRemovalMixin):
     name = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField(null=True, blank=True)
@@ -32,8 +47,7 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     invoice_file = models.FileField(
-        blank=True,
-        upload_to='expense_invoices/',
+        upload_to='expense_documents/',
         storage=S3Boto3Storage(
             bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
         ),
@@ -64,6 +78,10 @@ class Expense(models.Model):
             self.invoice_file.delete(save=False)
 
         super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.remove_previous_file(self, 'invoice_file')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name + ' (R$ {})'.format(self.amount)
