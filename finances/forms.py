@@ -11,11 +11,10 @@ class ExpenseForm(forms.ModelForm):
         required=False, widget=forms.DateInput(attrs={'type': 'date'})
     )
     due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    extensionValidator = FileExtensionValidator(
-        ['.pdf', '.png', '.jpeg', '.jpg']
-    )
+
     invoice_file = forms.FileField(
-        required=False, validators=[extensionValidator]
+        required=False,
+        validators=[FileExtensionValidator(['.pdf', '.png', '.jpeg', '.jpg'])],
     )
 
     class Meta:
