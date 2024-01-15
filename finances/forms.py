@@ -1,19 +1,8 @@
-# expense/forms.py
-import os
-
 from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import Expense, Income
-
-
-def validate_file_extension(value):
-    allowed_extensions = ['.pdf', '.png', '.jpeg', '.jpg']
-    ext = os.path.splitext(value.name)[1].lower()
-    if ext not in allowed_extensions:
-        raise ValidationError(
-            'Extensão de arquivo não suportada. Por favor, use um arquivo PDF, PNG, JPEG ou JPG.'
-        )
+from .validators import FileExtensionValidator
 
 
 class ExpenseForm(forms.ModelForm):
@@ -23,9 +12,11 @@ class ExpenseForm(forms.ModelForm):
         required=False, widget=forms.DateInput(attrs={'type': 'date'})
     )
     due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-
+    extensionValidator = FileExtensionValidator(
+        ['.pdf', '.png', '.jpeg', '.jpg']
+    )
     invoice_file = forms.FileField(
-        required=False, validators=[validate_file_extension]
+        required=False, validators=[extensionValidator]
     )
 
     class Meta:
