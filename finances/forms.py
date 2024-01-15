@@ -17,9 +17,21 @@ class ExpenseForm(forms.ModelForm):
         validators=[FileExtensionValidator(['.pdf', '.png', '.jpeg', '.jpg'])],
     )
 
+    receipt_file = forms.FileField(
+        required=False,
+        validators=[FileExtensionValidator(['.pdf', '.png', '.jpeg', '.jpg'])],
+    )
+
     class Meta:
         model = Expense
-        fields = ['name', 'amount', 'due_date', 'payment_date', 'invoice_file']
+        fields = [
+            'name',
+            'amount',
+            'due_date',
+            'payment_date',
+            'invoice_file',
+            'receipt_file',
+        ]
 
 
 class IncomeForm(forms.ModelForm):

@@ -38,6 +38,16 @@ class Transaction(models.Model):
         return f'{self.name} ({self.amount})'
 
 
+def expense_upload_to(instance, filename):
+    return f'expense_documents/{filename}'
+
+
+def determine_storage():
+    return S3Boto3Storage(
+        bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
+    )
+
+
 class Expense(models.Model, FileRemovalMixin):
     name = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -47,10 +57,11 @@ class Expense(models.Model, FileRemovalMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     invoice_file = models.FileField(
-        upload_to='expense_documents/',
-        storage=S3Boto3Storage(
-            bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
-        ),
+        upload_to=expense_upload_to, storage=determine_storage, default=None
+    )
+
+    receipt_file = models.FileField(
+        upload_to=expense_upload_to, storage=determine_storage, default=None
     )
 
     transaction = models.OneToOneField(
@@ -80,7 +91,10 @@ class Expense(models.Model, FileRemovalMixin):
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+
         self.remove_previous_file(self, 'invoice_file')
+        self.remove_previous_file(self, 'receipt_file')
+
         super().save(*args, **kwargs)
 
     def __str__(self):
