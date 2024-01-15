@@ -146,3 +146,16 @@ class FileSanitizationMixin:
                 f'{field_name}_name',
                 f'{file_name}-{timestamp}{ext}',
             )
+
+
+class FileGenerationMixin:
+    def modify_file_name(self, form, field_name):
+        uploaded_file = form.cleaned_data[field_name]
+
+        if uploaded_file:
+            _, ext = os.path.splitext(uploaded_file.name)
+            class_name = form.instance.__class__.__name__.lower()
+            file_name = f'{class_name}_{form.instance.id}{ext}'  # Substitua "ext" pela extensão real
+
+            field = getattr(form.instance, f'{field_name}')
+            setattr(field, f'name', file_name)
