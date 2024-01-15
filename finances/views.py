@@ -12,7 +12,6 @@ from .forms import ExpenseForm, IncomeForm
 from .mixins import (
     ExpenseTransactionMixin,
     FileGenerationMixin,
-    FileSanitizationMixin,
     FilterMixin,
     IncomeTransactionMixin,
     MonthlyMixin,

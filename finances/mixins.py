@@ -158,4 +158,4 @@ class FileGenerationMixin:
             file_name = f'{class_name}_{form.instance.id}{ext}'  # Substitua "ext" pela extensão real
 
             field = getattr(form.instance, f'{field_name}')
-            setattr(field, f'name', file_name)
+            setattr(field, 'name', file_name)
