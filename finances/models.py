@@ -59,6 +59,9 @@ class Expense(models.Model):
     def delete(self, *args, **kwargs):
         if self.transaction:
             self.transaction.delete()
+        
+        if self.invoice_file:
+            self.invoice_file.delete(save=False)
 
         super().delete(*args, **kwargs)
 
