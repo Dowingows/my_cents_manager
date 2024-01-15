@@ -4,10 +4,10 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from .models import Transaction
 
@@ -129,6 +129,7 @@ class MonthlyMixin(View):
         next_link = url + f'?month={next_month}&year={next_year}'
         prev_link = url + f'?month={prev_month}&year={prev_year}'
         return next_link, prev_link
+
 
 class FileGenerationMixin:
     def modify_file_name(self, form, field_name, prefix=None):
