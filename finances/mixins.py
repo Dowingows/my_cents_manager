@@ -155,7 +155,7 @@ class FileGenerationMixin:
         if uploaded_file:
             _, ext = os.path.splitext(uploaded_file.name)
             class_name = form.instance.__class__.__name__.lower()
-            file_name = f'{class_name}_{form.instance.id}{ext}'  # Substitua "ext" pela extensão real
+            file_name = f'{class_name}_{form.instance.id}{ext}'
 
             field = getattr(form.instance, f'{field_name}')
             setattr(field, 'name', file_name)
