@@ -88,6 +88,9 @@ class Expense(models.Model, FileRemovalMixin):
         if self.invoice_file:
             self.invoice_file.delete(save=False)
 
+        if self.receipt_file:
+            self.receipt_file.delete(save=False)
+
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
