@@ -11,6 +11,7 @@ from finances.models import Transaction
 from .forms import ExpenseForm, IncomeForm
 from .mixins import (
     ExpenseTransactionMixin,
+    FileGenerationMixin,
     FilterMixin,
     IncomeTransactionMixin,
     MonthlyMixin,
@@ -38,7 +39,9 @@ class DetailView(UserFilteredMixin, generic.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
+class ExpenseCreateView(
+    ExpenseTransactionMixin, FileGenerationMixin, generic.CreateView
+):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/new.html'
@@ -46,6 +49,9 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        self.modify_file_name(form, 'invoice_file', 'invoice')
+        self.modify_file_name(form, 'receipt_file', 'receipt')
 
         response = super().form_valid(form)
 
@@ -55,14 +61,21 @@ class ExpenseCreateView(ExpenseTransactionMixin, generic.CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ExpenseUpdateView(ExpenseTransactionMixin, generic.UpdateView):
+class ExpenseUpdateView(
+    ExpenseTransactionMixin, FileGenerationMixin, generic.UpdateView
+):
     model = Expense
     form_class = ExpenseForm
     template_name = 'expense/update.html'
     success_url = reverse_lazy('finances:expense_index')
 
     def form_valid(self, form):
+
+        self.modify_file_name(form, 'invoice_file', 'invoice')
+        self.modify_file_name(form, 'receipt_file', 'receipt')
+
         response = super().form_valid(form)
+
         self.process_transaction(form, 'expense')
         return response
 

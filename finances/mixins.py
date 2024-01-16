@@ -1,6 +1,10 @@
+import os
+import re
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -125,3 +129,25 @@ class MonthlyMixin(View):
         next_link = url + f'?month={next_month}&year={next_year}'
         prev_link = url + f'?month={prev_month}&year={prev_year}'
         return next_link, prev_link
+
+
+class FileGenerationMixin:
+    def modify_file_name(self, form, field_name, prefix=None):
+        uploaded_file = form.cleaned_data[field_name]
+
+        if isinstance(uploaded_file, InMemoryUploadedFile):
+
+            file_name, ext = os.path.splitext(uploaded_file.name)
+
+            file_name = re.sub(r'[^\w\-.]+', '-', file_name)
+            file_name = file_name.replace(' ', '-')
+
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+
+            if prefix is None:
+                prefix = form.instance.__class__.__name__.lower()
+
+            file_name = f'{prefix}_{file_name}_{timestamp}{ext}'
+
+            field = getattr(form.instance, f'{field_name}')
+            setattr(field, 'name', file_name)

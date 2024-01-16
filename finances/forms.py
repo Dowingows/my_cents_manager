@@ -1,7 +1,7 @@
-# expense/forms.py
 from django import forms
 
 from .models import Expense, Income
+from .validators import FileExtensionValidator
 
 
 class ExpenseForm(forms.ModelForm):
@@ -12,9 +12,26 @@ class ExpenseForm(forms.ModelForm):
     )
     due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
 
+    invoice_file = forms.FileField(
+        required=False,
+        validators=[FileExtensionValidator(['.pdf', '.png', '.jpeg', '.jpg'])],
+    )
+
+    receipt_file = forms.FileField(
+        required=False,
+        validators=[FileExtensionValidator(['.pdf', '.png', '.jpeg', '.jpg'])],
+    )
+
     class Meta:
         model = Expense
-        fields = ['name', 'amount', 'due_date', 'payment_date']
+        fields = [
+            'name',
+            'amount',
+            'due_date',
+            'payment_date',
+            'invoice_file',
+            'receipt_file',
+        ]
 
 
 class IncomeForm(forms.ModelForm):
