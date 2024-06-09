@@ -26,3 +26,5 @@ jobs:
       
       - name: Run tests
         run: poetry run task test
+        env:
+          DJANGO_ENV: test
