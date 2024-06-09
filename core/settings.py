@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = eval(os.environ.get('DEBUG', default='True'))
-TEST = eval(os.environ.get('TEST', default='False'))
+DJANGO_ENV = os.environ.get('DJANGO_ENV', default='development')
 
 ALLOWED_HOSTS = os.environ.get(
     'DJANGO_ALLOWED_HOSTS', default='localhost 127.0.0.1 [::1]'
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if TEST:
+if DJANGO_ENV == 'test':
     # Configuração para ambiente local (SQLite)
     DATABASES = {
         'default': {
