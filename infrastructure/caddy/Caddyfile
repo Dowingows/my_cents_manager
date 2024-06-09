@@ -1,6 +1,11 @@
 {$DOMAIN} {
 	reverse_proxy app:8000
 	tls {$EMAIL}
+
+    handle_path /static/* {
+		root * /usr/src/app/static
+		file_server
+    }
 }
 
 http://{$DOMAIN} {
