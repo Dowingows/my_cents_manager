@@ -1,38 +1,44 @@
-  version: "3.9"
+services:
+  app:
+    build: .  # Build the Django application using the provided Dockerfile          
+    command:  ["./entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]  # Start Gunicorn
+    expose:
+      - "8000"  # Expose port 8000 for communication with Nginx
+    
+    environment:
+      - DEBUG=${DEBUG}
+      - DJANGO_ENV=${DJANGO_ENV}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - AWS_REGION=$AWS_REGION
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME
 
-  services:
-    app:
-      build: .  # Build the Django application using the provided Dockerfile          
-      command:  ["./entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]  # Start Gunicorn
-      expose:
-        - "8000"  # Expose port 8000 for communication with Nginx
-      
-      environment:
-        - DEBUG=${DEBUG}
-        - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
-        - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
-        - DB_NAME=${DB_NAME}
-        - DB_USER=${DB_USER}
-        - DB_PASSWORD=${DB_PASSWORD}
-        - DB_HOST=${DB_HOST}
-        - DB_PORT=${DB_PORT}
-        - AWS_REGION=$AWS_REGION
-        - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-        - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-        - AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME
-  
-    caddy:
-      image: caddy:2.7.6-alpine  # Use a stable Nginx image
-      environment:
-        - DOMAIN=${DOMAIN}
-        - EMAIL=${EMAIL}
+    volumes:
+      - static_data:/usr/src/app/static
 
-      ports:
-        - "80:80"
-        - "443:443"
+  caddy:
+    image: caddy:2.7.6-alpine  # Use a stable Nginx image
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
 
-      volumes:
-        - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "80:80"
+      - "443:443"
 
-      depends_on:
-        - app  # Ensure app container starts before Nginx
+    volumes:
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - static_data:/usr/src/app/static
+
+    depends_on:
+      - app  # Ensure app container starts before Nginx
+
+volumes:
+  static_data:
