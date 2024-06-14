@@ -45,6 +45,7 @@ def expense_upload_to(instance, filename):
 def determine_storage():
     return S3Boto3Storage(
         bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
+        endpoint_url=settings.AWS_S3_ENDPOINT_URL
     )
 
 
