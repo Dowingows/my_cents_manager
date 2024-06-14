@@ -11,6 +11,13 @@ pkgs.mkShell {
 
   shellHook = ''
 
+    DJANGO_ENV=test
+    EMAIL=internal
+    DOMAIN=localhost
+    DEBUG=True
+    DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1 [::1]"
+    CSRF_TRUSTED_ORIGINS="http://localhost https://localhost"
+
     MYSQL_BASEDIR=${pkgs.mariadb}
     MYSQL_HOME="$PWD/mysql"
     MYSQL_DATADIR="$MYSQL_HOME/data"
